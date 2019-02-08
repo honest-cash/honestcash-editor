@@ -38,5 +38,9 @@ export class HomeComponent implements OnInit {
 
         honestEditor.setContent(post.bodyMD);
       });
+
+    honestEditor.subscribe((markdown: string) => {
+      console.log(markdown);
+    });
   }
 }
