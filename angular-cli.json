@@ -1,0 +1,5 @@
+{
+  "styles": [
+    "./honest-editor-js/dist/static/css/app.css"
+  ]
+}
