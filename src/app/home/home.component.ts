@@ -4,7 +4,7 @@ import { finalize } from 'rxjs/operators';
 import { PostService } from './post.service';
 
 // @ts-ignore
-import HonestEditor from '../../../honest-editor-js/dist/static/js/app.js';
+import HonestEditor from 'honest-editor-js';
 
 interface Post {
   id: number;
