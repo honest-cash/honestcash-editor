@@ -8,6 +8,9 @@
 # Dependencies
 /node_modules
 
+# Honest Editor
+/honest-editor-js
+
 # Cordova
 /www
 /plugins

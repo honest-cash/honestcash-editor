@@ -1,46 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-import { finalize } from 'rxjs/operators';
-
-import { PostService } from './post.service';
-
-// @ts-ignore
-import HonestEditor from 'honest-editor-js';
-
-interface Post {
-  id: number;
-  bodyMD: string;
-  title: string;
-  status: 'draft' | 'published';
-}
+import { PostService } from '@app/shared/services/post.service';
+import { EditorService } from '@app/shared/services/editor.service';
+import { Post } from '@app/shared/interfaces/index';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: [
-    './home.component.scss'
-  ]
+  styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
   post: Post;
   isLoading: boolean;
 
-  constructor(private postService: PostService) {}
+  constructor(private editorService: EditorService, private postService: PostService) {}
 
   ngOnInit() {
     this.isLoading = true;
 
-    const honestEditor: any = new HonestEditor('honest-editor');
+    this.editorService.setEditor();
 
-    this.postService
-      .loadPostDraft({})
-      .subscribe((post: Post) => {
-        this.post = post;
-
-        honestEditor.setContent(post.bodyMD);
-      });
-
-    honestEditor.subscribe((markdown: string) => {
-      console.log(markdown);
+    this.postService.loadPostDraft({ postId: 1862 }).subscribe((post: Post) => {
+      this.post = post;
+      this.editorService.setPost(post);
     });
   }
 }
