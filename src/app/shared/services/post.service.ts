@@ -19,7 +19,7 @@ const routes = {
   draft: (c: DraftContext = {}) =>
     c.parentPostId ? `/draft?parentPostId=${c.parentPostId}` : c.postId ? `/post/${c.postId}` : '/draft',
   saveDraft: (p: Post) => `/draft/${p.id}/body`,
-  publishPost: (p: Post) => `/draft/${p.id}/publish`
+  publishPost: (p: Post) => `/draft/${p.id}/publish`,
 };
 
 @Injectable()

@@ -13,14 +13,16 @@ export class EditorService {
   private editor: any;
   private post: Post;
 
-  constructor(private postService: PostService) {}
+  constructor(
+    private postService: PostService
+  ) {}
 
   setEditor() {
     this.editor = new HonestEditor('honest-editor');
     this.loaded.next('editor');
   }
 
-  getEditor() {
+  getEditor () {
     return this.editor;
   }
 

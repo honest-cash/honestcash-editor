@@ -19,7 +19,9 @@ export class ButtonPostSaveComponent implements OnInit {
   public post: Post;
   private editor: any;
 
-  constructor(private editorService: EditorService) {
+  constructor(
+    private editorService: EditorService
+  ) {
     this.isEditorLoaded = false;
     this.isSaving = false;
     this.isSaved = false;
@@ -29,7 +31,7 @@ export class ButtonPostSaveComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.editorService.isLoaded.subscribe(status => {
+    this.editorService.isLoaded.subscribe((status) => {
       if (status === 'editor') {
         this.editor = this.editorService.getEditor();
       }

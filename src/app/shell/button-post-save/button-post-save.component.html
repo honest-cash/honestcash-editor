@@ -1,10 +1,4 @@
-<button
-  class="btn btn-light btn-sm"
-  type="button"
-  aria-label="Save draft"
-  (click)="saveDraft()"
-  [disabled]="!isEditorLoaded || isSaving"
->
+<button class="btn btn-light btn-sm" type="button" aria-label="Save draft" (click)="saveDraft()" [disabled]="!isEditorLoaded || isSaving">
   <span *ngIf="!isEditorLoaded" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
   <span *ngIf="!isEditorLoaded" class="sr-only">Loading...</span>
   <div *ngIf="isEditorLoaded">
@@ -16,13 +10,7 @@
     </span>
   </div>
 </button>
-<button
-  class="btn btn-success btn-sm"
-  type="button"
-  aria-label="Publish post"
-  (click)="publishPost()"
-  [disabled]="(!isEditorLoaded || isSaving) && !isSaved"
->
+<button class="btn btn-success btn-sm" type="button" aria-label="Publish post" (click)="publishPost()" [disabled]="(!isEditorLoaded || isSaving) && !isSaved">
   <span *ngIf="!isEditorLoaded" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
   <span *ngIf="!isEditorLoaded" class="sr-only">Loading...</span>
   <div *ngIf="isEditorLoaded">
