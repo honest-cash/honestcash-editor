@@ -2,12 +2,16 @@
 
 
 ## Installation
+- for honest-editor-js
 ```
-npm i
 cd honest-editor-js npm i
+npm run build
 ```
 
+- for the wrapper
 ```
+npm install
+npm run transfer-editor // this will transfer css files
 npm run start
 ```
 
