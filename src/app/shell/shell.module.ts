@@ -10,10 +10,12 @@ import { ButtonPostSaveComponent } from './button-post-save/button-post-save.com
 
 import { PostService } from '@app/shared/services/post.service';
 import { EditorService } from '@app/shared/services/editor.service';
+import { PostPublishModalComponent } from '@app/shared/components/modals/post-publish-modal/post-publish-modal.component';
 
 @NgModule({
   imports: [CommonModule, TranslateModule, NgbModule, RouterModule],
-  declarations: [HeaderComponent, ShellComponent, ButtonPostSaveComponent],
-  providers: [PostService, EditorService]
+  declarations: [HeaderComponent, ShellComponent, ButtonPostSaveComponent, PostPublishModalComponent],
+  providers: [PostService, EditorService],
+  entryComponents: [PostPublishModalComponent]
 })
 export class ShellModule {}
