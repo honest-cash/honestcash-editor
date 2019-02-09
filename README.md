@@ -1,6 +1,5 @@
 # Honest Editor
 
-
 ## Installation
 ```
 npm install
