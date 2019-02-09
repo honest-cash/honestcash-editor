@@ -11,6 +11,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
       </button>
     </div>
     <div class="modal-body">
+      <tag-input></tag-input>
       <p>Hello, {{ name }}!</p>
     </div>
     <div class="modal-footer">
