@@ -1,6 +1,10 @@
-<p>
-  You can pass an existing component as content of the modal window. In this case remember to add content component as
-  an <code>entryComponents</code> section of your <code>NgModule</code>.
-</p>
-
-<button class="btn btn-lg btn-outline-primary" (click)="open()">Launch demo modal</button>
+<div class="modal-header">
+  <h6 class="modal-title">Prepare your story for readers</h6>
+</div>
+<div class="modal-body">
+  <small><strong>Add or change topics so readers know what your story is about.</strong></small>
+  <tag-input theme="hc-theme" [(ngModel)]="hashtags"></tag-input>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-block btn-outline-dark" (click)="publish()">Publish</button>
+</div>

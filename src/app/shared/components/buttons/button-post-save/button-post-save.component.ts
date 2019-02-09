@@ -57,7 +57,7 @@ export class ButtonPostSaveComponent implements OnInit {
             const req2 = tx.get(`${lastOpenedTx}/content`);
 
             req2.onsuccess = (event3: any) => {
-              console.log(event3.target.result.text);
+              // console.log(event3.target.result.text);
             };
           };
         };

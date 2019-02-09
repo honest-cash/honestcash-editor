@@ -3,4 +3,5 @@ export interface Post {
   bodyMD: string;
   title: string;
   status: 'draft' | 'published';
+  hashtags: any[];
 }

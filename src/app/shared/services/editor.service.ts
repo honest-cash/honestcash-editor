@@ -57,13 +57,21 @@ export class EditorService {
     if (this.post.bodyMD.length < 50) {
       return this.toastr.error('The story needs to be at least 50 characters.');
     } else {
-      const modalRef = this.modalService.open(PostPublishModalComponent);
-      modalRef.componentInstance.name = 'World';
+      const modalRef = this.modalService.open(PostPublishModalComponent, {
+        backdrop: 'static'
+      });
 
-      /* this.postService.publishPost(this.post).subscribe(d => {
-        this.toastr.success('Post has been published.');
-        this.loaded.next('postPublished');
-      }); */
+      modalRef.result.then(
+        hashtags => {
+          this.post.hashtags = hashtags;
+
+          this.postService.publishPost(this.post).subscribe(d => {
+            this.toastr.success('Post has been published.');
+            this.loaded.next('postPublished');
+          });
+        },
+        e => console.log('error', e)
+      );
     }
   }
 }

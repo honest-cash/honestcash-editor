@@ -18,6 +18,7 @@ const routes = {
   quote: (c: RandomQuoteContext) => `/jokes/random?category=${c.category}`,
   draft: (c: DraftContext = {}) =>
     c.parentPostId ? `/draft?parentPostId=${c.parentPostId}` : c.postId ? `/post/${c.postId}` : '/draft',
+  savePostProperty: (p: Post, property: 'title' | 'body' | 'hashtags') => `/draft/${p.id}/${property}`,
   saveDraft: (p: Post) => `/draft/${p.id}/body`,
   publishPost: (p: Post) => `/draft/${p.id}/publish`
 };
@@ -32,6 +33,10 @@ export class PostService {
 
   loadPostDraft(draftContext: DraftContext) {
     return this.httpClient.get(routes.draft(draftContext));
+  }
+
+  savePostProperty(post: Post, property: 'title' | 'body' | 'hashtags') {
+    return this.httpClient.put(routes.savePostProperty(post, property), post);
   }
 
   saveDraft(post: Post) {
