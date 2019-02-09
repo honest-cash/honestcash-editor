@@ -19,9 +19,7 @@ export class ButtonPostSaveComponent implements OnInit {
   public post: Post;
   private editor: any;
 
-  constructor(
-    private editorService: EditorService
-  ) {
+  constructor(private editorService: EditorService) {
     this.isEditorLoaded = false;
     this.isSaving = false;
     this.isSaved = false;
@@ -31,7 +29,7 @@ export class ButtonPostSaveComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.editorService.isLoaded.subscribe((status) => {
+    this.editorService.isLoaded.subscribe(status => {
       if (status === 'editor') {
         this.editor = this.editorService.getEditor();
       }
@@ -41,11 +39,46 @@ export class ButtonPostSaveComponent implements OnInit {
         this.isPublished = this.post.status === 'published' ? true : false;
         this.isEditorLoaded = true;
         this.initAutoSave();
+
+        const id = indexedDB.open('stackedit-db', 1);
+
+        id.onerror = event => console.log('error', event);
+        id.onsuccess = (event: any) => {
+          const db = event.target.result;
+          const tx = db.transaction(['objects']).objectStore('objects');
+          const req = tx.get('lastOpened');
+
+          req.onsuccess = (event2: any) => {
+            // console.log('event', event.target);
+            const lastOpenedList = Object.entries(event2.target.result.data);
+            const lastOpenedItem = lastOpenedList[lastOpenedList.length - 1];
+            const lastOpenedTx = lastOpenedItem[0];
+
+            const req2 = tx.get(`${lastOpenedTx}/content`);
+
+            req2.onsuccess = (event3: any) => {
+              console.log(event3.target.result.text);
+            };
+          };
+        };
       }
 
       if (status === 'bodyChanged') {
         this.isBodyChanged = true;
         this.isSaved = false;
+      }
+
+      if (status === 'draftSaved') {
+        this.isBodyChanged = false;
+        this.isSaving = false;
+        this.isSaved = true;
+      }
+
+      if (status === 'postPublished') {
+        this.isBodyChanged = false;
+        this.isSaving = false;
+        this.isSaved = true;
+        this.isPublished = true;
       }
     });
   }
@@ -61,18 +94,11 @@ export class ButtonPostSaveComponent implements OnInit {
 
   saveDraft() {
     this.isSaving = true;
-    return this.editorService.saveDraft().subscribe(d => {
-      this.isSaving = false;
-      this.isSaved = true;
-    });
+    this.editorService.saveDraft();
   }
 
   publishPost() {
     this.isSaving = true;
-    return this.editorService.publishPost().subscribe(p => {
-      this.isSaving = false;
-      this.isSaved = true;
-      this.isPublished = true;
-    });
+    this.editorService.publishPost();
   }
 }

@@ -1,14 +1,10 @@
 <header>
-  <nav class="navbar navbar-expand-lg">
+  <nav class="navbar navbar-light navbar-expand">
     <a class="navbar-brand" href="/">
       <img height="34" src="https://honest.cash/img/honest-logo-2.png" />
     </a>
 
-    <button class="btn btn-default navbar-toggler" type="button" aria-controls="navbar-menu"
-            aria-label="Toggle navigation" (click)="toggleMenu()" [attr.aria-expanded]="!menuHidden">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div id="navbar-menu" class="collapse navbar-collapse float-xs-none" [ngbCollapse]="menuHidden">
+    <div id="navbar-menu" class="collapse navbar-collapse float-xs-none">
       <div class="navbar-nav ml-auto">
         <div class="nav-item mr-4">
           <app-button-post-save></app-button-post-save>
@@ -19,13 +15,13 @@
           </a>
           <div ngbDropdownMenu aria-labelledby="user-dropdown">
             <h6 class="dropdown-header">
-              <span translate>Logged in as</span> <b>{{username}}</b></h6>
+              <span translate>Logged in as</span> <b>{{ username }}</b>
+            </h6>
             <div class="dropdown-divider"></div>
             <button class="dropdown-item" (click)="logout()" translate>Logout</button>
           </div>
         </div>
       </div>
     </div>
-
   </nav>
 </header>

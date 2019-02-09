@@ -11,7 +11,6 @@ import { ButtonPostSaveComponent } from './button-post-save/button-post-save.com
 import { PostService } from '@app/shared/services/post.service';
 import { EditorService } from '@app/shared/services/editor.service';
 
-
 @NgModule({
   imports: [CommonModule, TranslateModule, NgbModule, RouterModule],
   declarations: [HeaderComponent, ShellComponent, ButtonPostSaveComponent],

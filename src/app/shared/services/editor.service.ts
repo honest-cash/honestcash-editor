@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 import HonestEditor from 'honest-editor-js';
 import { Post } from '@app/shared/interfaces';
 import { PostService } from '@app/shared/services/post.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable()
 export class EditorService {
@@ -13,16 +14,14 @@ export class EditorService {
   private editor: any;
   private post: Post;
 
-  constructor(
-    private postService: PostService
-  ) {}
+  constructor(private postService: PostService, private toastr: ToastrService) {}
 
-  setEditor() {
-    this.editor = new HonestEditor('honest-editor');
+  setEditor(domId: string = 'honest-editor') {
+    this.editor = new HonestEditor(domId);
     this.loaded.next('editor');
   }
 
-  getEditor () {
+  getEditor() {
     return this.editor;
   }
 
@@ -45,10 +44,20 @@ export class EditorService {
   }
 
   saveDraft() {
-    return this.postService.saveDraft(this.post);
+    this.postService.saveDraft(this.post).subscribe(d => {
+      this.toastr.success('Draft has been saved.');
+      this.loaded.next('draftSaved');
+    });
   }
 
   publishPost() {
-    return this.postService.publishPost(this.post);
+    if (this.post.bodyMD.length < 50) {
+      return this.toastr.error('The story needs to be at least 50 characters.');
+    } else {
+      this.postService.publishPost(this.post).subscribe(d => {
+        this.toastr.success('Post has been published.');
+        this.loaded.next('postPublished');
+      });
+    }
   }
 }

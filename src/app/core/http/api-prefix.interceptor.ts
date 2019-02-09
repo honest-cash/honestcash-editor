@@ -10,8 +10,7 @@ import { AuthenticationService } from '../authentication/authentication.service'
  */
 @Injectable()
 export class ApiPrefixInterceptor implements HttpInterceptor {
-  constructor(private authentificationService: AuthenticationService) {
-  }
+  constructor(private authentificationService: AuthenticationService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (!/^(http|https):/i.test(request.url)) {
