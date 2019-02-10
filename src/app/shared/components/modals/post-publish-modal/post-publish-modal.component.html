@@ -8,11 +8,20 @@
     [(ngModel)]="post.userPostHashtags"
     [separatorKeyCodes]="[32, 188]"
     (onAdd)="onAddRemovePaste()"
+    [maxItems]="6"
     (onRemove)="onAddRemovePaste()"
     (onPaste)="onAddRemovePaste()"
     [identifyBy]="'hashtag'"
     [displayBy]="'hashtag'"
   ></tag-input>
+  <small
+    ><strong>
+      <ul>
+        <li>You can only add maximum of 6 topics to your story</li>
+        <li>You can edit the story after publishing</li>
+      </ul>
+    </strong></small
+  >
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-block btn-outline-dark" (click)="publish()">Publish</button>
