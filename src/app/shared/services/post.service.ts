@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Post } from '@app/shared/interfaces';
+import { Observable } from 'rxjs';
 
 export interface DraftContext {
   parentPostId?: number;
@@ -19,21 +20,21 @@ const routes = {
 export class PostService {
   constructor(private httpClient: HttpClient) {}
 
-  loadPostDraft(draftContext: DraftContext) {
-    return this.httpClient.get(routes.draft(draftContext));
+  loadPostDraft(draftContext: DraftContext): Observable<Post> {
+    return this.httpClient.get<Post>(routes.draft(draftContext));
   }
 
-  savePostProperty(post: Post, property: 'title' | 'body' | 'hashtags') {
-    return this.httpClient.put(routes.savePostProperty(post, property), post);
+  savePostProperty(post: Post, property: 'title' | 'body' | 'hashtags'): Observable<Post> {
+    return this.httpClient.put<Post>(routes.savePostProperty(post, property), post);
   }
 
-  saveDraft(post: Post) {
-    return this.httpClient.put(routes.saveDraft(post), {
+  saveDraft(post: Post): Observable<Post> {
+    return this.httpClient.put<Post>(routes.saveDraft(post), {
       body: post.bodyMD
     });
   }
 
-  publishPost(post: Post) {
-    return this.httpClient.put(routes.publishPost(post), post);
+  publishPost(post: Post): Observable<Post> {
+    return this.httpClient.put<Post>(routes.publishPost(post), post);
   }
 }

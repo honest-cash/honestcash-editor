@@ -2,13 +2,25 @@ import { BehaviorSubject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Post } from '@app/shared/interfaces';
 import { PostService } from '@app/shared/services/post.service';
-import { ToastrService } from 'ngx-toastr';
+import { ToastrService, ActiveToast } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { PostPublishModalComponent } from '@app/shared/components/modals/post-publish-modal/post-publish-modal.component';
 
 // @ts-ignore
 declare var HonestEditor: any;
+
+export const editorEvents = {
+  editor: {
+    loaded: 'editor-loaded',
+    changed: 'editor-changed'
+  },
+  post: {
+    loaded: 'post-loaded',
+    saved: 'post-saved',
+    published: 'post-published'
+  }
+};
 
 @Injectable()
 export class EditorService {
@@ -24,11 +36,11 @@ export class EditorService {
     this.editor = new HonestEditor(domId);
 
     this.editor.subscribe((markdown: string) => {
-      this.loaded.next('bodyChanged');
+      this.loaded.next(editorEvents.editor.changed);
       this.post.bodyMD = markdown;
     });
 
-    this.loaded.next('editor');
+    this.loaded.next(editorEvents.editor.loaded);
   }
 
   getEditor() {
@@ -38,29 +50,32 @@ export class EditorService {
   setPost(post: Post) {
     this.post = post;
     this.editor.setContent(post.bodyMD);
-    this.loaded.next('post');
+    this.loaded.next(editorEvents.post.loaded);
   }
 
   getPost(): Post {
     return this.post;
   }
 
-  saveDraft() {
+  saveDraft(): void {
     this.postService
       .saveDraft(this.post)
       .toPromise()
       .then(d => {
-        this.loaded.next('draftSaved');
+        this.loaded.next(editorEvents.post.saved);
       });
   }
 
-  publishPost() {
+  publishPost(): ActiveToast<any> {
     if (this.post.bodyMD.length < 50) {
       return this.toastr.error('The story needs to be at least 50 characters.');
     } else {
       const modalRef = this.modalService.open(PostPublishModalComponent, {
         backdrop: 'static'
       });
+
+      this.post.hashtags = this.post.userPostHashtags || [];
+      (modalRef.componentInstance as PostPublishModalComponent).post = this.post;
 
       modalRef.result.then(
         hashtags => {
@@ -71,7 +86,7 @@ export class EditorService {
             .toPromise()
             .then(d => {
               this.toastr.success('Post has been published.');
-              this.loaded.next('postPublished');
+              this.loaded.next(editorEvents.post.published);
             });
         },
         e => console.log('error', e)

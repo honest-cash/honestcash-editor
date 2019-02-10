@@ -21,7 +21,7 @@ export class HomeComponent implements OnInit {
 
     this.postService
       .loadPostDraft({
-        postId: undefined
+        postId: 1614
       })
       .subscribe((post: Post) => {
         this.post = post;

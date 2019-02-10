@@ -3,7 +3,8 @@ export interface Post {
   bodyMD: string;
   title: string;
   status: 'draft' | 'published';
-  hashtags: any[];
+  userPostHashtags: any[];
+  hashtags: any[]; // for setting up the hashtags
 }
 
 export interface User {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { EditorService } from '@app/shared/services/editor.service';
+import { EditorService, editorEvents } from '@app/shared/services/editor.service';
 import { PostService } from '@app/shared/services/post.service';
 import { Post } from '@app/shared/interfaces/index';
 import { interval } from 'rxjs';
@@ -30,51 +30,29 @@ export class ButtonPostSaveComponent implements OnInit {
 
   ngOnInit() {
     this.editorService.isLoaded.subscribe(status => {
-      if (status === 'editor') {
+      if (status === editorEvents.editor.loaded) {
         this.editor = this.editorService.getEditor();
       }
 
-      if (status === 'post') {
+      if (status === editorEvents.post.loaded) {
         this.post = this.editorService.getPost();
         this.isPublished = this.post.status === 'published' ? true : false;
         this.isEditorLoaded = true;
         // this.initAutoSave();
-
-        const id = indexedDB.open('stackedit-db', 1);
-
-        id.onerror = event => console.log('error', event);
-        id.onsuccess = (event: any) => {
-          const db = event.target.result;
-          const tx = db.transaction(['objects']).objectStore('objects');
-          const req = tx.get('lastOpened');
-
-          req.onsuccess = (event2: any) => {
-            // console.log('event', event.target);
-            const lastOpenedList = Object.entries(event2.target.result.data);
-            const lastOpenedItem = lastOpenedList[lastOpenedList.length - 1];
-            const lastOpenedTx = lastOpenedItem[0];
-
-            const req2 = tx.get(`${lastOpenedTx}/content`);
-
-            req2.onsuccess = (event3: any) => {
-              // console.log(event3.target.result.text);
-            };
-          };
-        };
       }
 
-      if (status === 'bodyChanged') {
+      if (status === editorEvents.editor.changed) {
         this.isBodyChanged = true;
         this.isSaved = false;
       }
 
-      if (status === 'draftSaved') {
+      if (status === editorEvents.post.saved) {
         this.isBodyChanged = false;
         this.isSaving = false;
         this.isSaved = true;
       }
 
-      if (status === 'postPublished') {
+      if (status === editorEvents.post.published) {
         this.isBodyChanged = false;
         this.isSaving = false;
         this.isSaved = true;

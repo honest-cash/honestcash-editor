@@ -3,7 +3,14 @@
 </div>
 <div class="modal-body">
   <small><strong>Add or change topics so readers know what your story is about.</strong></small>
-  <tag-input theme="hc-theme" [(ngModel)]="hashtags"></tag-input>
+  <tag-input
+    theme="hc-theme"
+    [(ngModel)]="post.hashtags"
+    [separatorKeyCodes]="[32, 188]"
+    (onAdd)="onAdd()"
+    [identifyBy]="'hashtag'"
+    [displayBy]="'hashtag'"
+  ></tag-input>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-block btn-outline-dark" (click)="publish()">Publish</button>

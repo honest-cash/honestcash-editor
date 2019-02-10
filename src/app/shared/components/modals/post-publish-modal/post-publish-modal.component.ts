@@ -1,16 +1,25 @@
 import { Component } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { PostService } from '@app/shared/services/post.service';
+import { Post } from '@app/shared/interfaces';
 
 @Component({
   selector: 'app-post-publish-modal',
   templateUrl: './post-publish-modal.component.html'
 })
 export class PostPublishModalComponent {
-  hashtags: any[];
+  post: Post;
 
-  constructor(public activeModal: NgbActiveModal) {}
+  constructor(public activeModal: NgbActiveModal, private postService: PostService) {}
+
+  public onAdd() {
+    this.postService
+      .savePostProperty(this.post, 'hashtags')
+      .toPromise()
+      .then(() => console.log('added'));
+  }
 
   public publish() {
-    this.activeModal.close(this.hashtags);
+    this.activeModal.close(this.post.hashtags);
   }
 }
