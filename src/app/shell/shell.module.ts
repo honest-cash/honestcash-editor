@@ -10,10 +10,12 @@ import { HeaderComponent } from './header/header.component';
 
 import { PostService } from '@app/shared/services/post.service';
 import { EditorService } from '@app/shared/services/editor.service';
+import { NotAuthorizedComponent } from '@app/shared/components/pages/not-authorized/not-authorized.component';
+import { NotAuthorizedRoutingModule } from '@app/shared/components/pages/not-authorized/not-authorized-routing.module';
 
 @NgModule({
-  imports: [CommonModule, SharedModule, TranslateModule, NgbModule, RouterModule],
-  declarations: [HeaderComponent, ShellComponent],
+  imports: [CommonModule, SharedModule, TranslateModule, NgbModule, RouterModule, NotAuthorizedRoutingModule],
+  declarations: [HeaderComponent, ShellComponent, NotAuthorizedComponent],
   providers: [PostService, EditorService]
 })
 export class ShellModule {}

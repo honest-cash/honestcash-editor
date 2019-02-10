@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { NotAuthorizedComponent } from '@app/shared/components/pages/not-authorized/not-authorized.component';
 
 const routes: Routes = [
-  { path: 'not-authorized', component: NotAuthorizedComponent },
   // Fallback when no prior route is matched
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
