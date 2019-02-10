@@ -38,7 +38,7 @@ export class ButtonPostSaveComponent implements OnInit {
         this.post = this.editorService.getPost();
         this.isPublished = this.post.status === 'published' ? true : false;
         this.isEditorLoaded = true;
-        this.initAutoSave();
+        // this.initAutoSave();
 
         const id = indexedDB.open('stackedit-db', 1);
 

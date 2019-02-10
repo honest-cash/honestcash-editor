@@ -6,5 +6,5 @@ export const environment = {
   version: env.npm_package_version,
   serverUrl: 'https://honest.cash/api',
   defaultLanguage: 'en-US',
-  supportedLanguages: [ 'en-US' ]
+  supportedLanguages: ['en-US']
 };

@@ -13,7 +13,8 @@ import { PostPublishModalComponent } from '@app/shared/components/modals/post-pu
 @Injectable()
 export class EditorService {
   public loaded = new BehaviorSubject('none');
-  isLoaded = this.loaded.asObservable();
+  public isLoaded = this.loaded.asObservable();
+
   private editor: any;
   private post: Post;
 
@@ -21,6 +22,12 @@ export class EditorService {
 
   setEditor(domId: string = 'honest-editor') {
     this.editor = new HonestEditor(domId);
+
+    this.editor.subscribe((markdown: string) => {
+      this.loaded.next('bodyChanged');
+      this.post.bodyMD = markdown;
+    });
+
     this.loaded.next('editor');
   }
 
@@ -32,25 +39,19 @@ export class EditorService {
     this.post = post;
     this.editor.setContent(post.bodyMD);
     this.loaded.next('post');
-    this.setSubscriber();
   }
 
   getPost(): Post {
     return this.post;
   }
 
-  setSubscriber() {
-    this.editor.subscribe((markdown: string) => {
-      this.loaded.next('bodyChanged');
-      this.post.bodyMD = markdown;
-    });
-  }
-
   saveDraft() {
-    this.postService.saveDraft(this.post).subscribe(d => {
-      this.toastr.success('Draft has been saved.');
-      this.loaded.next('draftSaved');
-    });
+    this.postService
+      .saveDraft(this.post)
+      .toPromise()
+      .then(d => {
+        this.loaded.next('draftSaved');
+      });
   }
 
   publishPost() {
@@ -65,10 +66,13 @@ export class EditorService {
         hashtags => {
           this.post.hashtags = hashtags;
 
-          this.postService.publishPost(this.post).subscribe(d => {
-            this.toastr.success('Post has been published.');
-            this.loaded.next('postPublished');
-          });
+          this.postService
+            .publishPost(this.post)
+            .toPromise()
+            .then(d => {
+              this.toastr.success('Post has been published.');
+              this.loaded.next('postPublished');
+            });
         },
         e => console.log('error', e)
       );

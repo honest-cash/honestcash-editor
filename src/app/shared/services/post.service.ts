@@ -28,7 +28,9 @@ export class PostService {
   }
 
   saveDraft(post: Post) {
-    return this.httpClient.put(routes.saveDraft(post), post);
+    return this.httpClient.put(routes.saveDraft(post), {
+      body: post.bodyMD
+    });
   }
 
   publishPost(post: Post) {
