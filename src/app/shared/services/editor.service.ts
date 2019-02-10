@@ -49,6 +49,7 @@ export class EditorService {
 
   setPost(post: Post) {
     this.post = post;
+    console.log(this.post);
     this.editor.setContent(post.bodyMD);
     this.loaded.next(editorEvents.post.loaded);
   }
@@ -74,7 +75,6 @@ export class EditorService {
         backdrop: 'static'
       });
 
-      this.post.hashtags = this.post.userPostHashtags || [];
       (modalRef.componentInstance as PostPublishModalComponent).post = this.post;
 
       modalRef.result.then(

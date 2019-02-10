@@ -4,7 +4,7 @@ export interface Post {
   title: string;
   status: 'draft' | 'published';
   userPostHashtags: any[];
-  hashtags: any[]; // for setting up the hashtags
+  hashtags: string; // for setting up the hashtags
 }
 
 export interface User {

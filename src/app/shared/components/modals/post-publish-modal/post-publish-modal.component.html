@@ -5,9 +5,11 @@
   <small><strong>Add or change topics so readers know what your story is about.</strong></small>
   <tag-input
     theme="hc-theme"
-    [(ngModel)]="post.hashtags"
+    [(ngModel)]="post.userPostHashtags"
     [separatorKeyCodes]="[32, 188]"
-    (onAdd)="onAdd()"
+    (onAdd)="onAddRemovePaste()"
+    (onRemove)="onAddRemovePaste()"
+    (onPaste)="onAddRemovePaste()"
     [identifyBy]="'hashtag'"
     [displayBy]="'hashtag'"
   ></tag-input>
