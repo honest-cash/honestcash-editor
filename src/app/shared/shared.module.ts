@@ -6,8 +6,8 @@ import { TagInputModule } from 'ngx-chips';
 import { ToastrModule } from 'ngx-toastr';
 
 import { LoaderComponent } from './loader/loader.component';
-import { PostPublishModalComponent } from '@app/shared/components/modals/post-publish-modal/post-publish-modal.component';
-import { ButtonPostSaveComponent } from '@app/shared/components/buttons/button-post-save/button-post-save.component';
+import { PostPublishModalComponent } from './components/modals/post-publish-modal/post-publish-modal.component';
+import { ButtonPostSaveComponent } from './components/buttons/button-post-save/button-post-save.component';
 
 @NgModule({
   imports: [

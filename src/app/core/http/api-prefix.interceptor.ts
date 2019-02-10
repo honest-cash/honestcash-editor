@@ -3,14 +3,13 @@ import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/c
 import { Observable } from 'rxjs';
 
 import { environment } from '@env/environment';
-import { AuthenticationService } from '../authentication/authentication.service';
 
 /**
  * Prefixes all requests with `environment.serverUrl`.
  */
 @Injectable()
 export class ApiPrefixInterceptor implements HttpInterceptor {
-  constructor(private authentificationService: AuthenticationService) {}
+  constructor() {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (!/^(http|https):/i.test(request.url)) {
@@ -18,12 +17,6 @@ export class ApiPrefixInterceptor implements HttpInterceptor {
         url: environment.serverUrl + request.url
       });
     }
-
-    request = request.clone({
-      setHeaders: {
-        'x-auth-token': `${this.authentificationService.credentials.token}`
-      }
-    });
 
     return next.handle(request);
   }

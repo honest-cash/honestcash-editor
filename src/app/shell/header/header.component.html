@@ -4,18 +4,18 @@
       <img height="34" src="https://honest.cash/img/honest-logo-2.png" />
     </a>
 
-    <div id="navbar-menu" class="collapse navbar-collapse float-xs-none">
+    <div *ngIf="user" id="navbar-menu" class="collapse navbar-collapse float-xs-none">
       <div class="navbar-nav ml-auto">
-        <div class="nav-item mr-4">
+        <div class="nav-item mr-4 buttons-wrapper">
           <app-button-post-save></app-button-post-save>
         </div>
         <div class="nav-item" ngbDropdown placement="bottom-right">
           <a id="user-dropdown" class="nav-link" ngbDropdownToggle>
-            <i class="fas fa-user-circle"></i>
+            <img class="user-image" src="{{user.imageUrl}}" />
           </a>
           <div ngbDropdownMenu aria-labelledby="user-dropdown">
             <h6 class="dropdown-header">
-              <span translate>Logged in as</span> <b>{{ username }}</b>
+              <span translate>Logged in as</span> <b>{{ user.username }}</b>
             </h6>
             <div class="dropdown-divider"></div>
             <button class="dropdown-item" (click)="logout()" translate>Logout</button>

@@ -6,7 +6,6 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
   templateUrl: './post-publish-modal.component.html'
 })
 export class PostPublishModalComponent {
-
   hashtags: any[];
 
   constructor(public activeModal: NgbActiveModal) {}

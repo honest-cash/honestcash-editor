@@ -12,14 +12,19 @@ export class HomeComponent implements OnInit {
   post: Post;
   isLoading: boolean;
 
-  constructor(private editorService: EditorService, private postService: PostService) {}
+  constructor(
+    private editorService: EditorService,
+    private postService: PostService
+  ) {}
 
   ngOnInit() {
     this.isLoading = true;
 
     this.editorService.setEditor();
 
-    this.postService.loadPostDraft({ postId: 1582 }).subscribe((post: Post) => {
+    this.postService.loadPostDraft({
+      postId: 1582
+    }).subscribe((post: Post) => {
       this.post = post;
       this.editorService.setPost(post);
     });

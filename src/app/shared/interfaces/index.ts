@@ -5,3 +5,9 @@ export interface Post {
   status: 'draft' | 'published';
   hashtags: any[];
 }
+
+export interface User {
+  id: string;
+  username: string;
+  imageUrl: string;
+}

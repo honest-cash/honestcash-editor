@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AuthenticationService, I18nService } from '@app/core';
+import { UserService } from '../../shared/services/user.service';
+import { User } from '../../shared/interfaces/index';
 
 @Component({
   selector: 'app-header',
@@ -10,14 +12,20 @@ import { AuthenticationService, I18nService } from '@app/core';
 })
 export class HeaderComponent implements OnInit {
   menuHidden = true;
+  public user: User;
 
   constructor(
     private router: Router,
     private authenticationService: AuthenticationService,
-    private i18nService: I18nService
+    private i18nService: I18nService,
+    private userService: UserService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.userService.getUser().subscribe(user => {
+      this.user = user;
+    });
+  }
 
   toggleMenu() {
     this.menuHidden = !this.menuHidden;
