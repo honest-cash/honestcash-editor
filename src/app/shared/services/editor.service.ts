@@ -1,14 +1,14 @@
 import { BehaviorSubject } from 'rxjs';
 import { Injectable } from '@angular/core';
-
-// @ts-ignore
-import HonestEditor from 'honest-editor-js';
 import { Post } from '@app/shared/interfaces';
 import { PostService } from '@app/shared/services/post.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { PostPublishModalComponent } from '@app/shared/components/modals/post-publish-modal/post-publish-modal.component';
+
+// @ts-ignore
+declare var HonestEditor: any;
 
 @Injectable()
 export class EditorService {
