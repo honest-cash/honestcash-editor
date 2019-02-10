@@ -8,6 +8,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { LoaderComponent } from './loader/loader.component';
 import { PostPublishModalComponent } from './components/modals/post-publish-modal/post-publish-modal.component';
 import { ButtonPostSaveComponent } from './components/buttons/button-post-save/button-post-save.component';
+import { NotAuthorizedComponent } from '@app/shared/components/pages/not-authorized/not-authorized.component';
 
 @NgModule({
   imports: [
@@ -22,8 +23,8 @@ import { ButtonPostSaveComponent } from './components/buttons/button-post-save/b
       positionClass: 'toast-bottom-right'
     })
   ],
-  declarations: [LoaderComponent, ButtonPostSaveComponent, PostPublishModalComponent],
-  exports: [LoaderComponent, ButtonPostSaveComponent, PostPublishModalComponent],
+  declarations: [LoaderComponent, NotAuthorizedComponent, ButtonPostSaveComponent, PostPublishModalComponent],
+  exports: [LoaderComponent, NotAuthorizedComponent, ButtonPostSaveComponent, PostPublishModalComponent],
   entryComponents: [PostPublishModalComponent]
 })
 export class SharedModule {}
