@@ -49,7 +49,6 @@ export class EditorService {
 
   setPost(post: Post) {
     this.post = post;
-    console.log(this.post);
     this.editor.setContent(post.bodyMD);
     this.loaded.next(editorEvents.post.loaded);
   }
@@ -71,9 +70,7 @@ export class EditorService {
     if (this.post.bodyMD.length < 50) {
       return this.toastr.error('The story needs to be at least 50 characters.');
     } else {
-      const modalRef = this.modalService.open(PostPublishModalComponent, {
-        backdrop: 'static'
-      });
+      const modalRef = this.modalService.open(PostPublishModalComponent);
 
       (modalRef.componentInstance as PostPublishModalComponent).post = this.post;
 
