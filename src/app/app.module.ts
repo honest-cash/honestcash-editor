@@ -16,6 +16,7 @@ import { LoginModule } from './login/login.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { UserService } from './shared/services/user.service';
+import { NotAuthorizedComponent } from '@app/shared/components/pages/not-authorized/not-authorized.component';
 
 @NgModule({
   imports: [

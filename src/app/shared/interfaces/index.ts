@@ -4,11 +4,12 @@ export interface Post {
   title: string;
   status: 'draft' | 'published';
   userPostHashtags: any[];
-  hashtags: string; // for setting up the hashtags
+  hashtags: string; // for setting up the hashtags,
+  userId: number;
 }
 
 export interface User {
-  id: string;
+  id: number;
   username: string;
   imageUrl: string;
 }
