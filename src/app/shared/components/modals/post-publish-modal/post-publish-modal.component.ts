@@ -12,7 +12,8 @@ export class PostPublishModalComponent {
 
   constructor(public activeModal: NgbActiveModal, private postService: PostService) {}
 
-  public onAdd() {
+  public onAddRemovePaste() {
+    this.post.hashtags = this.transformTags(this.post.userPostHashtags);
     this.postService
       .savePostProperty(this.post, 'hashtags')
       .toPromise()
@@ -20,6 +21,10 @@ export class PostPublishModalComponent {
   }
 
   public publish() {
-    this.activeModal.close(this.post.hashtags);
+    this.activeModal.close(this.transformTags(this.post.userPostHashtags));
+  }
+
+  private transformTags(tags: any[]) {
+    return tags.map(h => h.hashtag).join(',');
   }
 }

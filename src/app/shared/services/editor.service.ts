@@ -70,11 +70,8 @@ export class EditorService {
     if (this.post.bodyMD.length < 50) {
       return this.toastr.error('The story needs to be at least 50 characters.');
     } else {
-      const modalRef = this.modalService.open(PostPublishModalComponent, {
-        backdrop: 'static'
-      });
+      const modalRef = this.modalService.open(PostPublishModalComponent);
 
-      this.post.hashtags = this.post.userPostHashtags || [];
       (modalRef.componentInstance as PostPublishModalComponent).post = this.post;
 
       modalRef.result.then(
