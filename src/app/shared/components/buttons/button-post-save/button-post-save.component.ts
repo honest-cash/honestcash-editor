@@ -3,6 +3,7 @@ import { EditorService, editorEvents } from '@app/shared/services/editor.service
 import { PostService } from '@app/shared/services/post.service';
 import { Post } from '@app/shared/interfaces/index';
 import { interval } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-button-post-save',
@@ -20,7 +21,7 @@ export class ButtonPostSaveComponent implements OnInit {
   public post: Post;
   private editor: any;
 
-  constructor(private editorService: EditorService) {
+  constructor(private router: Router, private editorService: EditorService) {
     this.shouldShowButtons = false;
     this.isEditorLoaded = false;
     this.isSaving = false;
@@ -81,5 +82,9 @@ export class ButtonPostSaveComponent implements OnInit {
   publishPost() {
     this.isSaving = true;
     this.editorService.publishPost();
+  }
+
+  writePost() {
+    this.router.navigate(['/write']);
   }
 }

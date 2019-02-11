@@ -32,3 +32,12 @@
     <span *ngIf="!isPublished">Publish</span>
   </div>
 </button>
+<button
+  *ngIf="!shouldShowButtons"
+  class="btn btn-success btn-sm"
+  type="button"
+  aria-label="Write a post"
+  (click)="writePost()"
+>
+  <i class="fas fa-pencil-alt"></i>
+</button>
