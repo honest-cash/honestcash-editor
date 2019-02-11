@@ -12,10 +12,20 @@ import { PostService } from '@app/shared/services/post.service';
 import { EditorService } from '@app/shared/services/editor.service';
 import { NotAuthorizedComponent } from '@app/shared/components/pages/not-authorized/not-authorized.component';
 import { NotAuthorizedRoutingModule } from '@app/shared/components/pages/not-authorized/not-authorized-routing.module';
+import { HttpErrorRoutingModule } from '@app/shared/components/pages/http-error/http-error-routing.module';
+import { HttpErrorComponent } from '@app/shared/components/pages/http-error/http-error.component';
 
 @NgModule({
-  imports: [CommonModule, SharedModule, TranslateModule, NgbModule, RouterModule, NotAuthorizedRoutingModule],
-  declarations: [HeaderComponent, ShellComponent, NotAuthorizedComponent],
+  imports: [
+    CommonModule,
+    SharedModule,
+    TranslateModule,
+    NgbModule,
+    RouterModule,
+    NotAuthorizedRoutingModule,
+    HttpErrorRoutingModule
+  ],
+  declarations: [HeaderComponent, ShellComponent, NotAuthorizedComponent, HttpErrorComponent],
   providers: [PostService, EditorService]
 })
 export class ShellModule {}
