@@ -10,6 +10,7 @@ import { interval } from 'rxjs';
   styleUrls: ['./button-post-save.component.scss']
 })
 export class ButtonPostSaveComponent implements OnInit {
+  public shouldShowButtons: boolean;
   public isEditorLoaded: boolean;
   public isSaving: boolean;
   public isSaved: boolean;
@@ -20,6 +21,7 @@ export class ButtonPostSaveComponent implements OnInit {
   private editor: any;
 
   constructor(private editorService: EditorService) {
+    this.shouldShowButtons = false;
     this.isEditorLoaded = false;
     this.isSaving = false;
     this.isSaved = false;
@@ -32,6 +34,7 @@ export class ButtonPostSaveComponent implements OnInit {
     this.editorService.isLoaded.subscribe(status => {
       if (status === editorEvents.editor.loaded) {
         this.editor = this.editorService.getEditor();
+        this.shouldShowButtons = true;
       }
 
       if (status === editorEvents.post.loaded) {
