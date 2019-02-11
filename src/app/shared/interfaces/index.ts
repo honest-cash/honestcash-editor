@@ -6,6 +6,7 @@ export interface Post {
   userPostHashtags: any[];
   hashtags: string; // for setting up the hashtags,
   userId: number;
+  parentPostId: number;
 }
 
 export interface User {

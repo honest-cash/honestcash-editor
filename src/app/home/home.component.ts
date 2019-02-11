@@ -15,6 +15,9 @@ export class HomeComponent implements OnInit {
   post: Post;
   user: User;
   isLoading: boolean;
+  mode: 'write' | 'edit' | 'respond';
+  postId: number;
+  parentPostId: number;
 
   constructor(
     private router: Router,
@@ -28,26 +31,42 @@ export class HomeComponent implements OnInit {
     this.isLoading = true;
     this.userService.getUser().subscribe((user: User) => {
       this.user = user;
-      this.postService
-        .loadPostDraft({
-          postId: 1614
-        })
-        .subscribe((post: Post) => {
-          if (post.userId === this.user.id) {
+
+      this.activatedRoute.url.subscribe(url => {
+        if (url[0].toString() === 'write') {
+          if (url[1] && url[1].toString() === 'response') {
+            this.mode = 'respond';
+            this.parentPostId = parseInt(url[2].toString());
+          } else {
+            this.mode = 'write';
+          }
+        } else if (url[0].toString() === 'edit') {
+          this.mode = 'edit';
+          this.postId = parseInt(url[1].toString());
+        }
+
+        let draft: any = {};
+
+        if (this.mode === 'edit') {
+          draft = {
+            postId: this.postId
+          };
+        }
+
+        this.postService.loadPostDraft(draft).subscribe((post: Post) => {
+          if (post.userId !== this.user.id) {
             return this.router.navigate(['/not-authorized']);
           }
-          this.editorService.setEditor();
 
+          if (this.mode === 'respond') {
+            post.parentPostId = this.parentPostId;
+          }
+
+          this.editorService.setEditor();
           this.post = post;
           this.editorService.setPost(post);
         });
+      });
     });
-
-    /* this.activatedRoute.paramMap.pipe(
-      switchMap((params: ParamMap) => {
-          console.log('id', params.get('id'));
-        }
-      )
-    ); */
   }
 }
