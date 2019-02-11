@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AuthenticationService, I18nService } from '@app/core';
-import { UserService } from '../../shared/services/user.service';
-import { User } from '../../shared/interfaces/index';
+import { UserService } from '@app/shared/services/user.service';
+import { User } from '@app/shared/interfaces/index';
 
 @Component({
   selector: 'app-header',

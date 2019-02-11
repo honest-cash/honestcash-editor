@@ -62,6 +62,10 @@ export class ButtonPostSaveComponent implements OnInit {
         this.isSaved = true;
         this.isPublished = true;
       }
+
+      if (status === editorEvents.post.publishCancelled) {
+        this.isSaving = false;
+      }
     });
   }
 

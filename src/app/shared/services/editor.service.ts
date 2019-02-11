@@ -5,7 +5,7 @@ import { PostService } from '@app/shared/services/post.service';
 import { ToastrService, ActiveToast } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { PostPublishModalComponent } from '@app/shared/components/modals/post-publish-modal/post-publish-modal.component';
+import { PostPublishModalComponent } from '@app/shell/components/modals/post-publish-modal/post-publish-modal.component';
 
 // @ts-ignore
 declare var HonestEditor: any;
@@ -18,7 +18,8 @@ export const editorEvents = {
   post: {
     loaded: 'post-loaded',
     saved: 'post-saved',
-    published: 'post-published'
+    published: 'post-published',
+    publishCancelled: 'publish-cancelled'
   }
 };
 
@@ -88,7 +89,9 @@ export class EditorService {
               this.loaded.next(editorEvents.post.published);
             });
         },
-        e => console.log('error', e)
+        dismiss => {
+          this.loaded.next(editorEvents.post.publishCancelled);
+        }
       );
     }
   }

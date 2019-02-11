@@ -6,26 +6,51 @@ import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { ShellComponent } from './shell.component';
-import { HeaderComponent } from './header/header.component';
+import { HeaderComponent } from '@app/shell/components/partials/header/header.component';
 
 import { PostService } from '@app/shared/services/post.service';
 import { EditorService } from '@app/shared/services/editor.service';
-import { NotAuthorizedComponent } from '@app/shared/components/pages/not-authorized/not-authorized.component';
-import { NotAuthorizedRoutingModule } from '@app/shared/components/pages/not-authorized/not-authorized-routing.module';
-import { HttpErrorRoutingModule } from '@app/shared/components/pages/http-error/http-error-routing.module';
-import { HttpErrorComponent } from '@app/shared/components/pages/http-error/http-error.component';
+import { NotAuthorizedComponent } from '@app/shell/components/pages/not-authorized/not-authorized.component';
+import { NotAuthorizedRoutingModule } from '@app/shell/components/pages/not-authorized/not-authorized-routing.module';
+import { HttpErrorRoutingModule } from '@app/shell/components/pages/http-error/http-error-routing.module';
+import { HttpErrorComponent } from '@app/shell/components/pages/http-error/http-error.component';
+import { PostPublishModalComponent } from '@app/shell/components/modals/post-publish-modal/post-publish-modal.component';
+import { ButtonPostSaveComponent } from '@app/shell/components/buttons/button-post-save/button-post-save.component';
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TagInputModule } from 'ngx-chips';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   imports: [
     CommonModule,
     SharedModule,
+    TagInputModule,
+    BrowserAnimationsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ToastrModule.forRoot({
+      timeOut: 4000,
+      toastClass: 'ngx-toast',
+      positionClass: 'toast-bottom-right'
+    }),
     TranslateModule,
     NgbModule,
     RouterModule,
     NotAuthorizedRoutingModule,
     HttpErrorRoutingModule
   ],
-  declarations: [HeaderComponent, ShellComponent, NotAuthorizedComponent, HttpErrorComponent],
-  providers: [PostService, EditorService]
+  declarations: [
+    HeaderComponent,
+    ShellComponent,
+    PostPublishModalComponent,
+    ButtonPostSaveComponent,
+    NotAuthorizedComponent,
+    HttpErrorComponent
+  ],
+  exports: [PostPublishModalComponent, ButtonPostSaveComponent],
+  providers: [PostService, EditorService],
+  entryComponents: [PostPublishModalComponent]
 })
 export class ShellModule {}

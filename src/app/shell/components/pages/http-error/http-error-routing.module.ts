@@ -3,11 +3,11 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { extract } from '@app/core';
 import { Shell } from '@app/shell/shell.service';
-import { NotAuthorizedComponent } from '@app/shared/components/pages/not-authorized/not-authorized.component';
+import { HttpErrorComponent } from '@app/shell/components/pages/http-error/http-error.component';
 
 const routes: Routes = [
   Shell.childRoutes([
-    { path: 'not-authorized', component: NotAuthorizedComponent, data: { title: extract('Honest - Not Authorized') } }
+    { path: 'http-error', component: HttpErrorComponent, data: { title: extract('Honest - HTTP Error') } }
   ])
 ];
 
@@ -16,4 +16,4 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: []
 })
-export class NotAuthorizedRoutingModule {}
+export class HttpErrorRoutingModule {}
