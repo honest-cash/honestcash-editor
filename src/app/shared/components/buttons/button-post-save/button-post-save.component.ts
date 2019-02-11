@@ -32,7 +32,7 @@ export class ButtonPostSaveComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.editorService.isLoaded.subscribe(status => {
+    this.editorService.getEventStream().subscribe(status => {
       if (status === editorEvents.editor.loaded) {
         this.editor = this.editorService.getEditor();
         this.shouldShowButtons = true;

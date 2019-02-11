@@ -24,9 +24,7 @@ export const editorEvents = {
 
 @Injectable()
 export class EditorService {
-  public loaded = new BehaviorSubject('none');
-  public isLoaded = this.loaded.asObservable();
-
+  private loaded: BehaviorSubject<string> = new BehaviorSubject('none');
   private editor: any;
   private post: Post;
 
@@ -43,11 +41,15 @@ export class EditorService {
     this.loaded.next(editorEvents.editor.loaded);
   }
 
-  getEditor() {
+  getEventStream(): BehaviorSubject<string> {
+    return this.loaded;
+  }
+
+  getEditor(): any {
     return this.editor;
   }
 
-  setPost(post: Post) {
+  setPost(post: Post): void {
     this.post = post;
     this.editor.setContent(post.bodyMD);
     this.loaded.next(editorEvents.post.loaded);
@@ -81,7 +83,7 @@ export class EditorService {
           this.postService
             .publishPost(this.post)
             .toPromise()
-            .then(d => {
+            .then(() => {
               this.toastr.success('Post has been published.');
               this.loaded.next(editorEvents.post.published);
             });
