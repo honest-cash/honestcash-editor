@@ -21,6 +21,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   mode: 'write' | 'edit' | 'respond';
   postId: number;
   parentPostId: number;
+  private editorInitialized: boolean;
 
   constructor(
     private router: Router,
@@ -37,49 +38,54 @@ export class HomeComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.userService.getUser().subscribe(
       (user: User) => {
-        this.user = user;
+        if (!this.user) {
+          this.user = user;
 
-        this.activatedRoute.url.subscribe(url => {
-          if (url[0].toString() === 'write') {
-            if (url[1] && url[1].toString() === 'response') {
-              this.mode = 'respond';
-              this.parentPostId = parseInt(url[2].toString());
-            } else {
-              this.mode = 'write';
-            }
-          } else if (url[0].toString() === 'edit') {
-            this.mode = 'edit';
-            this.postId = parseInt(url[1].toString());
-          }
-
-          let draft: any = {};
-
-          if (this.mode === 'edit') {
-            draft = {
-              postId: this.postId
-            };
-          }
-
-          this.postService.loadPostDraft(draft).subscribe(
-            (post: Post) => {
-              if (post.userId !== this.user.id) {
-                return this.router.navigate(['/not-authorized']);
+          this.activatedRoute.url.subscribe(url => {
+            if (url[0].toString() === 'write') {
+              if (url[1] && url[1].toString() === 'response') {
+                this.mode = 'respond';
+                this.parentPostId = parseInt(url[2].toString());
+              } else {
+                this.mode = 'write';
               }
-
-              if (this.mode === 'respond') {
-                post.parentPostId = this.parentPostId;
-              }
-
-              this.editorService.setEditor();
-              this.post = post;
-              this.editorService.setPost(post);
-            },
-            error => {
-              log.error(error);
-              this.router.navigate(['/http-error']);
+            } else if (url[0].toString() === 'edit') {
+              this.mode = 'edit';
+              this.postId = parseInt(url[1].toString());
             }
-          );
-        });
+
+            let draft: any = {};
+
+            if (this.mode === 'edit') {
+              draft = {
+                postId: this.postId
+              };
+            }
+
+            this.postService.loadPostDraft(draft).subscribe(
+              (post: Post) => {
+                if (post.userId !== this.user.id) {
+                  return this.router.navigate(['/not-authorized']);
+                }
+
+                if (this.mode === 'respond') {
+                  post.parentPostId = this.parentPostId;
+                }
+
+                if (!this.editorInitialized) {
+                  this.editorService.setEditor();
+                  this.editorInitialized = true;
+                }
+                this.post = post;
+                this.editorService.setPost(post);
+              },
+              error => {
+                log.error(error);
+                this.router.navigate(['/http-error']);
+              }
+            );
+          });
+        }
       },
       error => {
         log.error(error);

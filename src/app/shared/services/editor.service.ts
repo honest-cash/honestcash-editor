@@ -32,6 +32,7 @@ export class EditorService {
   constructor(private postService: PostService, private toastr: ToastrService, private modalService: NgbModal) {}
 
   setEditor(domId: string = 'honest-editor') {
+    console.log('seteditor');
     this.editor = new HonestEditor(domId);
 
     this.editor.subscribe((markdown: string) => {
