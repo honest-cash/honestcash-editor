@@ -46,9 +46,4 @@ export class HeaderComponent implements OnInit {
   get languages(): string[] {
     return this.i18nService.supportedLanguages;
   }
-
-  get username(): string | null {
-    const credentials = this.authenticationService.credentials;
-    return credentials ? credentials.username : null;
-  }
 }

@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 
 export interface Credentials {
   // Customize received credentials here
-  username: string;
+  username?: string;
   token: string;
 }
 
@@ -26,13 +26,11 @@ export class AuthenticationService {
   constructor() {
     const savedCredentials = sessionStorage.getItem(credentialsKey) || localStorage.getItem(credentialsKey);
     const userToken = sessionStorage.getItem('HC_USER_TOKEN') || localStorage.getItem('HC_USER_TOKEN');
-    const userEmail = sessionStorage.getItem('HC_USER_EMAIL') || localStorage.getItem('HC_USER_EMAIL');
 
     if (savedCredentials) {
       this._credentials = JSON.parse(savedCredentials);
-    } else if (userToken && userEmail) {
+    } else if (userToken) {
       this._credentials = {
-        username: userEmail,
         token: userToken
       };
     }
@@ -49,9 +47,9 @@ export class AuthenticationService {
 
     const data = {
       username: context.username,
-      token: userToken || '123456'
+      token: userToken
     };
-    this.setCredentials(data, context.remember);
+    this.setCredentials({ token: userToken }, context.remember);
     return of(data);
   }
 

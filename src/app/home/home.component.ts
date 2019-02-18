@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { PostService } from '@app/shared/services/post.service';
 import { EditorService } from '@app/shared/services/editor.service';
 import { Post, User } from '@app/shared/interfaces/index';
@@ -14,7 +14,7 @@ const log = new Logger('HomeComponent');
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit {
   post: Post;
   user: User;
   isLoading: boolean;
@@ -32,6 +32,9 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.isLoading = true;
+  }
+
+  ngAfterViewInit() {
     this.userService.getUser().subscribe(
       (user: User) => {
         this.user = user;
