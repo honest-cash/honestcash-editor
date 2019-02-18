@@ -25,9 +25,16 @@ export class AuthenticationService {
 
   constructor() {
     const savedCredentials = sessionStorage.getItem(credentialsKey) || localStorage.getItem(credentialsKey);
+    const userToken = sessionStorage.getItem('HC_USER_TOKEN') || localStorage.getItem('HC_USER_TOKEN');
+    const userEmail = sessionStorage.getItem('HC_USER_EMAIL') || localStorage.getItem('HC_USER_EMAIL');
 
     if (savedCredentials) {
       this._credentials = JSON.parse(savedCredentials);
+    } else if (userToken && userEmail) {
+      this._credentials = {
+        username: userEmail,
+        token: userToken
+      };
     }
   }
 
