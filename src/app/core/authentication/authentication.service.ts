@@ -13,7 +13,7 @@ export interface LoginContext {
   remember?: boolean;
 }
 
-const credentialsKey = 'HC_USER_TOKEN';
+const credentialsKey = 'HC_USER_CREDENTIALS';
 
 /**
  * Provides a base for authentication workflow.
@@ -25,6 +25,7 @@ export class AuthenticationService {
 
   constructor() {
     const savedCredentials = sessionStorage.getItem(credentialsKey) || localStorage.getItem(credentialsKey);
+
     if (savedCredentials) {
       this._credentials = JSON.parse(savedCredentials);
     }
@@ -37,9 +38,11 @@ export class AuthenticationService {
    */
   login(context: LoginContext): Observable<Credentials> {
     // Replace by proper authentication call
+    const userToken = sessionStorage.getItem('HC_USER_TOKEN') || localStorage.getItem('HC_USER_TOKEN');
+
     const data = {
       username: context.username,
-      token: '123456'
+      token: userToken || '123456'
     };
     this.setCredentials(data, context.remember);
     return of(data);

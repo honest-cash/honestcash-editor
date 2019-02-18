@@ -13,7 +13,7 @@ export class HeadersInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     request = request.clone({
       setHeaders: {
-        'x-auth-token': `${this.authenticationService.credentials.token}`
+        'X-Auth-Token': `${this.authenticationService.credentials.token}`
       }
     });
 
