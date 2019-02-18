@@ -8,7 +8,7 @@
 >
   <span *ngIf="!isEditorLoaded" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
   <span *ngIf="!isEditorLoaded" class="sr-only">Loading...</span>
-  <div *ngIf="isEditorLoaded">
+  <div *ngIf="isEditorLoaded && !isPublished">
     <span *ngIf="isSaved && !isSaving && !isBodyChanged">Saved</span>
     <span *ngIf="!isSaved && !isSaving && isBodyChanged">Save</span>
     <span *ngIf="isSaving">
