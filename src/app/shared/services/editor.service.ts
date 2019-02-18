@@ -10,6 +10,12 @@ import { PostPublishModalComponent } from '@app/shell/components/modals/post-pub
 // @ts-ignore
 declare var HonestEditor: any;
 
+declare global {
+  interface Window {
+    HonestEditor: any;
+  }
+}
+
 export const editorEvents = {
   editor: {
     loaded: 'editor-loaded',
@@ -32,15 +38,24 @@ export class EditorService {
   constructor(private postService: PostService, private toastr: ToastrService, private modalService: NgbModal) {}
 
   setEditor(domId: string = 'honest-editor') {
-    console.log('seteditor');
-    this.editor = new HonestEditor(domId);
+    if (!this.editor) {
+      this.editor = new window.HonestEditor(domId);
 
-    this.editor.subscribe((markdown: string) => {
-      this.loaded.next(editorEvents.editor.changed);
-      this.post.bodyMD = markdown;
-    });
+      this.editor.getStore().subscribe((state: { type: string; payload: any }) => {
+        if (state.type === 'discussion/setCurrentDiscussionId') {
+          // this type is loaded last so we can assume that the editor is loaded
+          this.loaded.next(editorEvents.editor.loaded);
+        }
 
-    this.loaded.next(editorEvents.editor.loaded);
+        if (state.type === 'content/patchItem') {
+          // this is when the content is updated
+          const markdown = state.payload.text;
+          console.log('updated', markdown);
+          this.post.bodyMD = markdown;
+          this.loaded.next(editorEvents.editor.changed);
+        }
+      });
+    }
   }
 
   getEventStream(): BehaviorSubject<string> {
@@ -72,6 +87,7 @@ export class EditorService {
 
   publishPost(): ActiveToast<any> {
     if (this.post.bodyMD.length < 50) {
+      this.loaded.next(editorEvents.post.publishCancelled);
       return this.toastr.error('The story needs to be at least 50 characters.');
     } else {
       const modalRef = this.modalService.open(PostPublishModalComponent);
@@ -81,6 +97,8 @@ export class EditorService {
       modalRef.result.then(
         hashtags => {
           this.post.hashtags = hashtags;
+
+          console.log('this post', this.post);
 
           this.postService
             .publishPost(this.post)

@@ -21,7 +21,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   mode: 'write' | 'edit' | 'respond';
   postId: number;
   parentPostId: number;
-  private editorInitialized: boolean;
 
   constructor(
     private router: Router,
@@ -72,10 +71,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
                   post.parentPostId = this.parentPostId;
                 }
 
-                if (!this.editorInitialized) {
-                  this.editorService.setEditor();
-                  this.editorInitialized = true;
-                }
+                this.editorService.setEditor();
                 this.post = post;
                 this.editorService.setPost(post);
               },
