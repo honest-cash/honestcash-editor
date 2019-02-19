@@ -1,11 +1,13 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy } from '@angular/core';
 import { PostService } from '@app/shared/services/post.service';
 import { EditorService } from '@app/shared/services/editor.service';
 import { Post, User } from '@app/shared/interfaces/index';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from '@app/shared/services/user.service';
 import { Logger } from '@app/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
+
+import blankBody from './blankBody';
 
 const log = new Logger('HomeComponent');
 
@@ -43,16 +45,16 @@ export class HomeComponent implements OnDestroy, AfterViewInit {
           this.user = user;
 
           this.activatedRoute.url.subscribe(url => {
-            if (url[0].toString() === 'write') {
-              if (url[1] && url[1].toString() === 'response') {
+            if (url[1].toString() === 'write') {
+              if (url[2] && url[2].toString() === 'response') {
                 this.mode = 'respond';
-                this.parentPostId = parseInt(url[2].toString());
+                this.parentPostId = parseInt(url[3].toString());
               } else {
                 this.mode = 'write';
               }
-            } else if (url[0].toString() === 'edit') {
+            } else if (url[1].toString() === 'edit') {
               this.mode = 'edit';
-              this.postId = parseInt(url[1].toString());
+              this.postId = parseInt(url[2].toString());
             }
 
             let draft: any = {};
@@ -72,6 +74,10 @@ export class HomeComponent implements OnDestroy, AfterViewInit {
 
                   if (this.mode === 'respond') {
                     post.parentPostId = this.parentPostId;
+                  }
+
+                  if (this.mode === 'write' && !post.bodyMD) {
+                    post.bodyMD = blankBody;
                   }
 
                   this.post = post;

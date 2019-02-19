@@ -8,14 +8,14 @@ import { Shell } from '@app/shell/shell.service';
 const routes: Routes = [
   Shell.childRoutes([
     { path: '', component: HomeComponent, data: { title: extract('Honest') } },
-    { path: 'write', pathMatch: 'full', component: HomeComponent, data: { title: extract('Honest') } },
+    { path: 'markdown/write', pathMatch: 'full', component: HomeComponent, data: { title: extract('Honest') } },
     {
-      path: 'write/response/:parentPostId',
+      path: 'markdown/write/response/:parentPostId',
       pathMatch: 'full',
       component: HomeComponent,
       data: { title: extract('Honest') }
     },
-    { path: 'edit/:postId', pathMatch: 'full', component: HomeComponent, data: { title: extract('Honest') } }
+    { path: 'markdown/edit/:postId', pathMatch: 'full', component: HomeComponent, data: { title: extract('Honest') } }
   ])
 ];
 

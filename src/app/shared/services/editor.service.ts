@@ -84,7 +84,7 @@ export class EditorService {
     return this.post;
   }
 
-  saveDraft(): void {
+  saveDraft(cb?: () => void): void {
     this.toastr.info('Saving...');
     this.postService
       .saveDraft(this.post)
@@ -92,6 +92,9 @@ export class EditorService {
       .then(d => {
         this.toastr.success('Saved.');
         this.postChanged.next(editorEvents.post.saved);
+        if (cb) {
+          cb();
+        }
       });
   }
 

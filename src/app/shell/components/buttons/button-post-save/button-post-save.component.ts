@@ -9,7 +9,7 @@ import { BehaviorSubject } from 'rxjs';
   templateUrl: './button-post-save.component.html',
   styleUrls: ['./button-post-save.component.scss']
 })
-export class ButtonPostSaveComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ButtonPostSaveComponent implements OnInit, OnDestroy {
   public shouldShowButtons: boolean;
   public isPostLoaded: boolean;
   public isSaving: boolean;
@@ -86,12 +86,13 @@ export class ButtonPostSaveComponent implements OnInit, OnDestroy, AfterViewInit
 
   publishPost() {
     this.isSaving = true;
-    this.editorService.saveDraft();
-    this.isSaving = true;
-    this.editorService.publishPost();
+    this.editorService.saveDraft(() => {
+      this.isSaving = true;
+      this.editorService.publishPost();
+    });
   }
 
   writePost() {
-    this.router.navigate(['/write']);
+    this.router.navigate(['/markdown/write']);
   }
 }

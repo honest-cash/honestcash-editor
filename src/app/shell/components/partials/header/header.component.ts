@@ -39,6 +39,31 @@ export class HeaderComponent implements OnInit {
     this.authenticationService.logout().subscribe(() => this.router.navigate(['/login'], { replaceUrl: true }));
   }
 
+  goTo(path: string) {
+    switch (path) {
+      case 'profile':
+        window.location.href = `/profile/${this.user.username}`;
+        break;
+      case 'posts':
+        window.location.href = `/posts`;
+        break;
+      case 'wallet':
+        window.location.href = `/wallet`;
+        break;
+      case 'help':
+        window.location.href = `/honest_cash/frequently-asked-questions`;
+        break;
+      case 'terms-of-service':
+        window.location.href = `/honest_cash/honest-cash-terms-of-service-124`;
+        break;
+      case 'privacy-policy':
+        window.location.href = `/honest_cash/honestcash-privacy-policy`;
+        break;
+      default:
+        break;
+    }
+  }
+
   get currentLanguage(): string {
     return this.i18nService.language;
   }
