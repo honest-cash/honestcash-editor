@@ -1,81 +1,82 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, NgZone } from '@angular/core';
 import { EditorService, editorEvents } from '@app/shared/services/editor.service';
-import { PostService } from '@app/shared/services/post.service';
 import { Post } from '@app/shared/interfaces/index';
-import { interval } from 'rxjs';
 import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-button-post-save',
   templateUrl: './button-post-save.component.html',
   styleUrls: ['./button-post-save.component.scss']
 })
-export class ButtonPostSaveComponent implements OnInit {
+export class ButtonPostSaveComponent implements OnInit, OnDestroy, AfterViewInit {
   public shouldShowButtons: boolean;
-  public isEditorLoaded: boolean;
+  public isPostLoaded: boolean;
   public isSaving: boolean;
-  public isSaved: boolean;
   public isPublished: boolean;
-  public isBodyChanged: boolean;
-  public everyThreeSecs: any;
   public post: Post;
-  private editor: any;
+  public editorLoaded: BehaviorSubject<string>;
+  public editorChanged: BehaviorSubject<string>;
+  public postLoaded: BehaviorSubject<string>;
+  public postChanged: BehaviorSubject<string>;
 
-  constructor(private router: Router, private editorService: EditorService) {
+  constructor(private ngZone: NgZone, private router: Router, private editorService: EditorService) {
     this.shouldShowButtons = false;
-    this.isEditorLoaded = false;
+    this.isPostLoaded = false;
     this.isSaving = false;
-    this.isSaved = false;
     this.isPublished = false;
-    this.isBodyChanged = true;
-    this.everyThreeSecs = interval(3000);
   }
 
   ngOnInit() {
-    this.editorService.getEventStream().subscribe(status => {
-      if (status === editorEvents.editor.loaded) {
-        this.editor = this.editorService.getEditor();
-        this.shouldShowButtons = true;
-      }
+    const streams = this.editorService.getEventStreams();
+    this.editorLoaded = streams.editorLoaded;
+    this.editorChanged = streams.editorChanged;
+    this.postLoaded = streams.postLoaded;
+    this.postChanged = streams.postChanged;
 
-      if (status === editorEvents.post.loaded) {
-        this.post = this.editorService.getPost();
-        this.isPublished = this.post.status === 'published' ? true : false;
-        this.isEditorLoaded = true;
-        // this.initAutoSave();
+    this.editorLoaded.subscribe(
+      status => {},
+      error => {},
+      () => {
+        this.ngZone.run(() => (this.shouldShowButtons = true));
       }
+    );
 
-      if (status === editorEvents.editor.changed) {
-        this.isBodyChanged = true;
-        this.isSaved = false;
+    this.postLoaded.subscribe(
+      (status: string) => {},
+      (error: string) => {},
+      () => {
+        this.ngZone.run(() => {
+          this.post = this.editorService.getPost();
+          this.isPublished = this.post.status === 'published' ? true : false;
+          this.isPostLoaded = true;
+        });
       }
+    );
 
-      if (status === editorEvents.post.saved) {
-        this.isBodyChanged = false;
-        this.isSaving = false;
-        this.isSaved = true;
-      }
+    this.postChanged.subscribe(status => {
+      this.ngZone.run(() => {
+        if (status === editorEvents.post.saved) {
+          this.isSaving = false;
+        }
 
-      if (status === editorEvents.post.published) {
-        this.isBodyChanged = false;
-        this.isSaving = false;
-        this.isSaved = true;
-        this.isPublished = true;
-      }
+        if (status === editorEvents.post.published) {
+          this.isSaving = false;
+          this.isPublished = true;
+        }
 
-      if (status === editorEvents.post.publishCancelled) {
-        this.isSaving = false;
-      }
+        if (status === editorEvents.post.publishCancelled) {
+          this.isSaving = false;
+        }
+      });
     });
   }
 
-  initAutoSave() {
-    this.everyThreeSecs.subscribe(() => {
-      if (!this.isPublished && this.isBodyChanged) {
-        this.saveDraft();
-        this.isBodyChanged = false;
-      }
-    });
+  ngOnDestroy() {
+    this.editorLoaded.unsubscribe();
+    this.editorChanged.unsubscribe();
+    this.postLoaded.unsubscribe();
+    this.postChanged.unsubscribe();
   }
 
   saveDraft() {
@@ -84,6 +85,8 @@ export class ButtonPostSaveComponent implements OnInit {
   }
 
   publishPost() {
+    this.isSaving = true;
+    this.editorService.saveDraft();
     this.isSaving = true;
     this.editorService.publishPost();
   }

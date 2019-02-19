@@ -10,12 +10,6 @@ import { PostPublishModalComponent } from '@app/shell/components/modals/post-pub
 // @ts-ignore
 declare var HonestEditor: any;
 
-declare global {
-  interface Window {
-    HonestEditor: any;
-  }
-}
-
 export const editorEvents = {
   editor: {
     loaded: 'editor-loaded',
@@ -31,7 +25,10 @@ export const editorEvents = {
 
 @Injectable()
 export class EditorService {
-  private loaded: BehaviorSubject<string> = new BehaviorSubject('none');
+  private editorLoaded: BehaviorSubject<string> = new BehaviorSubject('none');
+  private editorChanged: BehaviorSubject<string> = new BehaviorSubject('none');
+  private postLoaded: BehaviorSubject<string> = new BehaviorSubject('none');
+  private postChanged: BehaviorSubject<string> = new BehaviorSubject('none');
   private editor: any;
   private post: Post;
 
@@ -39,27 +36,36 @@ export class EditorService {
 
   setEditor(domId: string = 'honest-editor') {
     if (!this.editor) {
-      this.editor = new window.HonestEditor(domId);
+      this.editor = new HonestEditor(domId);
 
       this.editor.getStore().subscribe((state: { type: string; payload: any }) => {
         if (state.type === 'discussion/setCurrentDiscussionId') {
           // this type is loaded last so we can assume that the editor is loaded
-          this.loaded.next(editorEvents.editor.loaded);
+          this.editorLoaded.complete();
         }
 
-        if (state.type === 'content/patchItem') {
+        if (this.post && state.type === 'content/patchItem') {
           // this is when the content is updated
           const markdown = state.payload.text;
-          console.log('updated', markdown);
           this.post.bodyMD = markdown;
-          this.loaded.next(editorEvents.editor.changed);
+          this.editorChanged.next(editorEvents.editor.changed);
         }
       });
     }
   }
 
-  getEventStream(): BehaviorSubject<string> {
-    return this.loaded;
+  getEventStreams(): {
+    editorLoaded: BehaviorSubject<string>;
+    editorChanged: BehaviorSubject<string>;
+    postLoaded: BehaviorSubject<string>;
+    postChanged: BehaviorSubject<string>;
+  } {
+    return {
+      editorLoaded: this.editorLoaded,
+      editorChanged: this.editorChanged,
+      postLoaded: this.postLoaded,
+      postChanged: this.postChanged
+    };
   }
 
   getEditor(): any {
@@ -67,9 +73,11 @@ export class EditorService {
   }
 
   setPost(post: Post): void {
-    this.post = post;
-    this.editor.setContent(post.bodyMD);
-    this.loaded.next(editorEvents.post.loaded);
+    if (!this.post) {
+      this.post = post;
+      this.editor.setContent(post.bodyMD);
+      this.postLoaded.complete();
+    }
   }
 
   getPost(): Post {
@@ -77,17 +85,19 @@ export class EditorService {
   }
 
   saveDraft(): void {
+    this.toastr.info('Saving...');
     this.postService
       .saveDraft(this.post)
       .toPromise()
       .then(d => {
-        this.loaded.next(editorEvents.post.saved);
+        this.toastr.success('Saved.');
+        this.postChanged.next(editorEvents.post.saved);
       });
   }
 
   publishPost(): ActiveToast<any> {
     if (this.post.bodyMD.length < 50) {
-      this.loaded.next(editorEvents.post.publishCancelled);
+      this.postChanged.next(editorEvents.post.publishCancelled);
       return this.toastr.error('The story needs to be at least 50 characters.');
     } else {
       const modalRef = this.modalService.open(PostPublishModalComponent);
@@ -98,18 +108,18 @@ export class EditorService {
         hashtags => {
           this.post.hashtags = hashtags;
 
-          console.log('this post', this.post);
+          this.toastr.info('Publishing...');
 
           this.postService
             .publishPost(this.post)
             .toPromise()
             .then(() => {
-              this.toastr.success('Post has been published.');
-              this.loaded.next(editorEvents.post.published);
+              this.toastr.success('Published.');
+              this.postChanged.next(editorEvents.post.published);
             });
         },
         dismiss => {
-          this.loaded.next(editorEvents.post.publishCancelled);
+          this.postChanged.next(editorEvents.post.publishCancelled);
         }
       );
     }

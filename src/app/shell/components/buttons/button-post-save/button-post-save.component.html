@@ -1,16 +1,15 @@
 <button
-  *ngIf="shouldShowButtons"
+  *ngIf="shouldShowButtons && !isPublished"
   class="btn btn-light btn-sm"
   type="button"
   aria-label="Save draft"
   (click)="saveDraft()"
-  [disabled]="!isEditorLoaded || isSaving"
+  [disabled]="isSaving"
 >
-  <span *ngIf="!isEditorLoaded" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
-  <span *ngIf="!isEditorLoaded" class="sr-only">Loading...</span>
-  <div *ngIf="isEditorLoaded && !isPublished">
-    <span *ngIf="isSaved && !isSaving && !isBodyChanged">Saved</span>
-    <span *ngIf="!isSaved && !isSaving && isBodyChanged">Save</span>
+  <span *ngIf="!isPostLoaded" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+  <span *ngIf="!isPostLoaded" class="sr-only">Loading...</span>
+  <div *ngIf="isPostLoaded">
+    <span *ngIf="!isSaving">Save</span>
     <span *ngIf="isSaving">
       <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
       Saving...
@@ -23,11 +22,11 @@
   type="button"
   aria-label="Publish post"
   (click)="publishPost()"
-  [disabled]="(!isEditorLoaded || isSaving) && !isSaved"
+  [disabled]="isSaving"
 >
-  <span *ngIf="!isEditorLoaded" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
-  <span *ngIf="!isEditorLoaded" class="sr-only">Loading...</span>
-  <div *ngIf="isEditorLoaded">
+  <span *ngIf="!isPostLoaded" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+  <span *ngIf="!isPostLoaded" class="sr-only">Loading...</span>
+  <div *ngIf="isPostLoaded">
     <span *ngIf="isPublished">Published</span>
     <span *ngIf="!isPublished">Publish</span>
   </div>

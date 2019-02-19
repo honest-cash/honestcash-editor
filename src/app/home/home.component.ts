@@ -1,11 +1,11 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { PostService } from '@app/shared/services/post.service';
 import { EditorService } from '@app/shared/services/editor.service';
 import { Post, User } from '@app/shared/interfaces/index';
-import { switchMap } from 'rxjs/operators';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from '@app/shared/services/user.service';
 import { Logger } from '@app/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 const log = new Logger('HomeComponent');
 
@@ -14,13 +14,14 @@ const log = new Logger('HomeComponent');
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit, AfterViewInit {
+export class HomeComponent implements OnDestroy, AfterViewInit {
   post: Post;
   user: User;
-  isLoading: boolean;
   mode: 'write' | 'edit' | 'respond';
   postId: number;
   parentPostId: number;
+  getUser: BehaviorSubject<User>;
+  editorLoaded: BehaviorSubject<string>;
 
   constructor(
     private router: Router,
@@ -28,14 +29,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
     private editorService: EditorService,
     private postService: PostService,
     private userService: UserService
-  ) {}
+  ) {
+    this.getUser = this.userService.getUser();
 
-  ngOnInit() {
-    this.isLoading = true;
+    const streams = this.editorService.getEventStreams();
+    this.editorLoaded = streams.editorLoaded;
   }
 
   ngAfterViewInit() {
-    this.userService.getUser().subscribe(
+    this.getUser.subscribe(
       (user: User) => {
         if (!this.user) {
           this.user = user;
@@ -63,17 +65,27 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
             this.postService.loadPostDraft(draft).subscribe(
               (post: Post) => {
-                if (post.userId !== this.user.id) {
-                  return this.router.navigate(['/not-authorized']);
-                }
+                if (!this.post) {
+                  if (post.userId !== this.user.id) {
+                    return this.router.navigate(['/not-authorized']);
+                  }
 
-                if (this.mode === 'respond') {
-                  post.parentPostId = this.parentPostId;
-                }
+                  if (this.mode === 'respond') {
+                    post.parentPostId = this.parentPostId;
+                  }
 
-                this.editorService.setEditor();
-                this.post = post;
-                this.editorService.setPost(post);
+                  this.post = post;
+
+                  this.editorService.setEditor();
+
+                  this.editorLoaded.subscribe(
+                    status => {},
+                    error => {},
+                    () => {
+                      this.editorService.setPost(this.post);
+                    }
+                  );
+                }
               },
               error => {
                 log.error(error);
@@ -88,5 +100,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.router.navigate(['/http-error']);
       }
     );
+  }
+
+  ngOnDestroy() {
+    this.getUser.unsubscribe();
+    this.editorLoaded.unsubscribe();
   }
 }
