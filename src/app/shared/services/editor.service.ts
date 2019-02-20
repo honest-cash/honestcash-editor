@@ -111,6 +111,9 @@ export class EditorService {
     } else if (!this.post.title || this.post.title === '') {
       this.postChanged.next(editorEvents.post.publishCancelled);
       return this.toastr.error('The story needs to have a title. Please write a heading in your story.');
+    } else if (this.post.title && this.post.title.length < 10) {
+      this.postChanged.next(editorEvents.post.publishCancelled);
+      return this.toastr.error('The title is too short. Please keep it longer than 9 characters.');
     }
 
     this.saveDraft(() => {
