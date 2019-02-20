@@ -21,6 +21,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TagInputModule } from 'ngx-chips';
 import { ToastrModule } from 'ngx-toastr';
+import { PartialPostDetailsComponent } from '@app/shell/components/partials/partial-post-details/partial-post-details.component';
 
 @NgModule({
   imports: [
@@ -46,10 +47,11 @@ import { ToastrModule } from 'ngx-toastr';
     ShellComponent,
     PostPublishModalComponent,
     ButtonPostSaveComponent,
+    PartialPostDetailsComponent,
     NotAuthorizedComponent,
     HttpErrorComponent
   ],
-  exports: [PostPublishModalComponent, ButtonPostSaveComponent],
+  exports: [PostPublishModalComponent, ButtonPostSaveComponent, PartialPostDetailsComponent],
   providers: [PostService, EditorService],
   entryComponents: [PostPublishModalComponent]
 })

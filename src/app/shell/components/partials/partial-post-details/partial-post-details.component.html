@@ -1,0 +1,25 @@
+<div *ngIf="shouldShowPartial && post" class="small ml-4">
+  <span *ngIf="!isResponse">
+    <strong>Title:</strong>
+    <span *ngIf="!post.title"
+      ><i
+        class="fas fa-info-circle"
+        placement="bottom"
+        ngbTooltip="First Heading (#) in your article will become the title."
+      ></i
+    ></span>
+    <span *ngIf="post.title">{{ post.title }}</span>
+  </span>
+  <span *ngIf="isResponse">
+    <strong>Commenting on:</strong>
+    <span *ngIf="post.parentPost.title">{{ post.parentPost.title }}</span>
+  </span>
+  <br *ngIf="!isResponse" />
+  <span *ngIf="!isResponse">
+    <strong>Status:</strong>
+    <span *ngIf="post.status === 'draft'" class="badge badge-pill badge-secondary">{{ post.status | uppercase }}</span>
+    <span *ngIf="post.status === 'published'" class="badge badge-pill badge-success">{{
+      post.status | uppercase
+    }}</span>
+  </span>
+</div>

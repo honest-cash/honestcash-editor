@@ -5,27 +5,23 @@ import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: 'app-button-post-save',
-  templateUrl: './button-post-save.component.html',
-  styleUrls: ['./button-post-save.component.scss']
+  selector: 'app-partial-post-details',
+  templateUrl: './partial-post-details.component.html',
+  styleUrls: ['./partial-post-details.component.scss']
 })
-export class ButtonPostSaveComponent implements OnInit, OnDestroy {
-  public shouldShowButtons: boolean;
+export class PartialPostDetailsComponent implements OnInit, OnDestroy {
+  public shouldShowPartial: boolean;
   public isPostLoaded: boolean;
-  public isSaving: boolean;
-  public isPublished: boolean;
-  public isResponse: boolean;
   public post: Post;
+  public isResponse: boolean;
   public editorLoaded: BehaviorSubject<string>;
   public editorChanged: BehaviorSubject<string>;
   public postLoaded: BehaviorSubject<string>;
   public postChanged: BehaviorSubject<string>;
 
   constructor(private ngZone: NgZone, private router: Router, private editorService: EditorService) {
-    this.shouldShowButtons = false;
+    this.shouldShowPartial = false;
     this.isPostLoaded = false;
-    this.isSaving = false;
-    this.isPublished = false;
     this.isResponse = false;
   }
 
@@ -40,9 +36,17 @@ export class ButtonPostSaveComponent implements OnInit, OnDestroy {
       status => {},
       error => {},
       () => {
-        this.ngZone.run(() => (this.shouldShowButtons = true));
+        this.ngZone.run(() => (this.shouldShowPartial = true));
       }
     );
+
+    this.editorChanged.subscribe(status => {
+      if (status === editorEvents.editor.changed) {
+        this.ngZone.run(() => {
+          this.post = this.editorService.getPost();
+        });
+      }
+    });
 
     this.postLoaded.subscribe(
       (status: string) => {},
@@ -51,7 +55,6 @@ export class ButtonPostSaveComponent implements OnInit, OnDestroy {
         this.ngZone.run(() => {
           this.post = this.editorService.getPost();
           this.isResponse = this.post.parentPostId ? true : false;
-          this.isPublished = this.post.status === 'published' ? true : false;
           this.isPostLoaded = true;
         });
       }
@@ -59,17 +62,8 @@ export class ButtonPostSaveComponent implements OnInit, OnDestroy {
 
     this.postChanged.subscribe(status => {
       this.ngZone.run(() => {
-        if (status === editorEvents.post.saved) {
-          this.isSaving = false;
-        }
-
         if (status === editorEvents.post.published) {
-          this.isSaving = false;
-          this.isPublished = true;
-        }
-
-        if (status === editorEvents.post.publishCancelled) {
-          this.isSaving = false;
+          this.post = this.editorService.getPost();
         }
       });
     });
@@ -80,19 +74,5 @@ export class ButtonPostSaveComponent implements OnInit, OnDestroy {
     this.editorChanged.unsubscribe();
     this.postLoaded.unsubscribe();
     this.postChanged.unsubscribe();
-  }
-
-  saveDraft() {
-    this.isSaving = true;
-    this.editorService.saveDraft();
-  }
-
-  publishPost() {
-    this.isSaving = true;
-    this.editorService.publishPost();
-  }
-
-  writePost() {
-    this.router.navigate(['/markdown/write']);
   }
 }

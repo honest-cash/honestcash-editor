@@ -1,5 +1,5 @@
 <button
-  *ngIf="shouldShowButtons && !isPublished"
+  *ngIf="shouldShowButtons && !isPublished && !isResponse"
   class="btn btn-light btn-sm"
   type="button"
   aria-label="Save draft"
@@ -27,8 +27,8 @@
   <span *ngIf="!isPostLoaded" class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
   <span *ngIf="!isPostLoaded" class="sr-only">Loading...</span>
   <div *ngIf="isPostLoaded">
-    <span *ngIf="isPublished">Published</span>
-    <span *ngIf="!isPublished">Publish</span>
+    <span *ngIf="!isResponse">Publish</span>
+    <span *ngIf="isResponse">Comment</span>
   </div>
 </button>
 <button

@@ -7,6 +7,7 @@ export interface Post {
   hashtags: string; // for setting up the hashtags,
   userId: number;
   parentPostId: number;
+  parentPost: Post;
 }
 
 export interface User {

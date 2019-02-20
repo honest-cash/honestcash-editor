@@ -9,6 +9,7 @@ export interface DraftContext {
 }
 
 const routes = {
+  getPost: (id: number) => `/post/${id}`,
   draft: (c: DraftContext = {}) =>
     c.parentPostId ? `/draft?parentPostId=${c.parentPostId}` : c.postId ? `/post/${c.postId}` : '/draft',
   savePostProperty: (p: Post, property: 'title' | 'body' | 'hashtags') => `/draft/${p.id}/${property}`,
@@ -19,6 +20,10 @@ const routes = {
 @Injectable()
 export class PostService {
   constructor(private httpClient: HttpClient) {}
+
+  getPost(id: number): Observable<Post> {
+    return this.httpClient.get<Post>(routes.getPost(id));
+  }
 
   loadPostDraft(draftContext: DraftContext): Observable<Post> {
     return this.httpClient.get<Post>(routes.draft(draftContext));

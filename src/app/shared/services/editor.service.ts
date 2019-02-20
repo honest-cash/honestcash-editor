@@ -25,6 +25,7 @@ export const editorEvents = {
 
 @Injectable()
 export class EditorService {
+  private isEditorInitialized = false;
   private editorLoaded: BehaviorSubject<string> = new BehaviorSubject('none');
   private editorChanged: BehaviorSubject<string> = new BehaviorSubject('none');
   private postLoaded: BehaviorSubject<string> = new BehaviorSubject('none');
@@ -39,15 +40,20 @@ export class EditorService {
       this.editor = new HonestEditor(domId);
 
       this.editor.getStore().subscribe((state: { type: string; payload: any }) => {
-        if (state.type === 'discussion/setCurrentDiscussionId') {
+        if (!this.isEditorInitialized && state.type === 'discussion/setCurrentDiscussionId') {
           // this type is loaded last so we can assume that the editor is loaded
+          this.isEditorInitialized = true;
           this.editorLoaded.complete();
         }
 
-        if (this.post && state.type === 'content/patchItem') {
+        if (this.isEditorInitialized && this.post && state.type === 'content/patchItem') {
           // this is when the content is updated
           const markdown = state.payload.text;
           this.post.bodyMD = markdown;
+          if (!this.post.title || this.post.title === '') {
+            const title = markdown.match(/\#(.*)/);
+            this.post.title = title ? title[1] : '';
+          }
           this.editorChanged.next(editorEvents.editor.changed);
         }
       });
@@ -102,7 +108,12 @@ export class EditorService {
     if (this.post.bodyMD.length < 50) {
       this.postChanged.next(editorEvents.post.publishCancelled);
       return this.toastr.error('The story needs to be at least 50 characters.');
-    } else {
+    } else if (!this.post.title || this.post.title === '') {
+      this.postChanged.next(editorEvents.post.publishCancelled);
+      return this.toastr.error('The story needs to have a title. Please write a heading in your story.');
+    }
+
+    this.saveDraft(() => {
       const modalRef = this.modalService.open(PostPublishModalComponent);
 
       (modalRef.componentInstance as PostPublishModalComponent).post = this.post;
@@ -125,6 +136,6 @@ export class EditorService {
           this.postChanged.next(editorEvents.post.publishCancelled);
         }
       );
-    }
+    });
   }
 }
