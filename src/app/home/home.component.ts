@@ -104,6 +104,18 @@ export class HomeComponent implements OnDestroy, AfterViewInit {
                         this.editorService.setPost(this.post);
                       }
                     );
+                  } else if (this.mode === 'write' && post.bodyMD) {
+                    this.post = post;
+
+                    this.editorService.setEditor();
+
+                    this.editorLoaded.subscribe(
+                      status => {},
+                      error => {},
+                      () => {
+                        this.editorService.setPost(this.post);
+                      }
+                    );
                   }
                 }
               },
