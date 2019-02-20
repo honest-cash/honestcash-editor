@@ -50,8 +50,8 @@ export class EditorService {
           // this is when the content is updated
           const markdown = state.payload.text;
           this.post.bodyMD = markdown;
-          if (!this.post.title || this.post.title === '') {
-            const title = markdown.match(/\#(.*)/);
+          const title = markdown.match(/\#(.*)/);
+          if (!this.post.title || this.post.title === '' || this.post.title !== title[1]) {
             this.post.title = title ? title[1] : '';
           }
           this.editorChanged.next(editorEvents.editor.changed);
