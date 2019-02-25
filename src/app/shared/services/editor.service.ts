@@ -37,7 +37,20 @@ export class EditorService {
 
   setEditor(domId: string = 'honest-editor') {
     if (!this.editor) {
-      this.editor = new HonestEditor(domId);
+      const token =
+        localStorage.getItem('HC_USER_TOKEN') ||
+        (localStorage.getItem('HC_USER_CREDENTIALS') && JSON.parse(localStorage.getItem('HC_USER_CREDENTIALS')).token);
+
+      this.editor = new HonestEditor(domId, {
+        upload: {
+          image: {
+            url: 'https://honest.cash/api/upload/image',
+            requireAuth: true,
+            tokenKey: 'x-auth-token',
+            token
+          }
+        }
+      });
 
       this.editor.getStore().subscribe((state: { type: string; payload: any }) => {
         if (!this.isEditorInitialized && state.type === 'discussion/setCurrentDiscussionId') {
