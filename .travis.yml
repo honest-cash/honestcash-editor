@@ -35,7 +35,7 @@ matrix:
         - npm install
 
       script:
-        - npm run build --prod
+        - npm run build-base --prod
 
       after_success:
         - chmod +x ./scripts/deploy.sh
