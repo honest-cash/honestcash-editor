@@ -32,6 +32,7 @@ export class EditorService {
   private postChanged: BehaviorSubject<string> = new BehaviorSubject('none');
   private editor: any;
   private post: Post;
+  private originalPost: Post;
 
   constructor(private postService: PostService, private toastr: ToastrService, private modalService: NgbModal) {}
 
@@ -64,8 +65,15 @@ export class EditorService {
           const markdown = state.payload.text;
           this.post.bodyMD = markdown;
           const title = markdown.match(/\#(.*)/);
-          if (!this.post.title || this.post.title === '' || this.post.title !== title[1]) {
-            this.post.title = title ? title[1] : '';
+
+          if (title && title[1] !== '' && !this.originalPost.title) {
+            this.post.title = title[1];
+          } else if (title && title[1] !== '' && this.originalPost.title) {
+            this.post.title = title[1];
+          } else if ((!title || (title && title[1] === '')) && this.originalPost.title) {
+            this.post.title = this.originalPost.title;
+          } else if ((!title || (title && title[1] === '')) && !this.originalPost.title) {
+            this.post.title = null;
           }
           this.editorChanged.next(editorEvents.editor.changed);
         }
@@ -94,6 +102,7 @@ export class EditorService {
   setPost(post: Post): void {
     if (!this.post) {
       this.post = post;
+      this.originalPost = JSON.parse(JSON.stringify(post));
       this.editor.setContent(post.bodyMD);
       this.postLoaded.complete();
     }
