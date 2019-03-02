@@ -70,9 +70,21 @@ export class EditorService {
             this.post.title = title[1];
           } else if (title && title[1] !== '' && this.originalPost.title) {
             this.post.title = title[1];
-          } else if ((!title || (title && title[1] === '')) && this.originalPost.title) {
+          } else if (
+            (
+              !title ||
+              (title && title[1] === '')
+            ) &&
+            this.originalPost.title
+          ) {
             this.post.title = this.originalPost.title;
-          } else if ((!title || (title && title[1] === '')) && !this.originalPost.title) {
+          } else if (
+            (
+              !title ||
+              (title && title[1] === '')
+            ) &&
+            !this.originalPost.title
+          ) {
             this.post.title = null;
           }
           this.editorChanged.next(editorEvents.editor.changed);
