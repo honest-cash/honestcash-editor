@@ -63,6 +63,7 @@ export class EditorService {
         if (this.isEditorInitialized && this.post && state.type === 'content/patchItem') {
           // this is when the content is updated
           const markdown = state.payload.text;
+          this.post.body = markdown;
           this.post.bodyMD = markdown;
           const title = markdown.match(/\#(.*)/);
 
@@ -70,21 +71,9 @@ export class EditorService {
             this.post.title = title[1];
           } else if (title && title[1] !== '' && this.originalPost.title) {
             this.post.title = title[1];
-          } else if (
-            (
-              !title ||
-              (title && title[1] === '')
-            ) &&
-            this.originalPost.title
-          ) {
+          } else if ((!title || (title && title[1] === '')) && this.originalPost.title) {
             this.post.title = this.originalPost.title;
-          } else if (
-            (
-              !title ||
-              (title && title[1] === '')
-            ) &&
-            !this.originalPost.title
-          ) {
+          } else if ((!title || (title && title[1] === '')) && !this.originalPost.title) {
             this.post.title = null;
           }
           this.editorChanged.next(editorEvents.editor.changed);
@@ -124,55 +113,77 @@ export class EditorService {
     return this.post;
   }
 
-  saveDraft(cb?: () => void): void {
+  saveDraft(cb?: () => void, err?: () => void): void {
+    if (this.post.bodyMD.length < 50) {
+      this.postChanged.next(editorEvents.post.publishCancelled);
+      this.toastr.error('The story needs to be at least 50 characters.');
+      return err();
+    } else if (!this.post.title || this.post.title === '') {
+      this.postChanged.next(editorEvents.post.publishCancelled);
+      this.toastr.error('The story needs to have a title. Please write a heading in your story.');
+      return err();
+    } else if (this.post.title && this.post.title.length < 10) {
+      this.postChanged.next(editorEvents.post.publishCancelled);
+      this.toastr.error('The title is too short. Please keep it longer than 9 characters.');
+      return err();
+    }
+
     this.toastr.info('Saving...');
     this.postService
-      .saveDraft(this.post)
+      .savePostProperty(this.post, 'title')
       .toPromise()
-      .then(d => {
-        this.toastr.success('Saved.');
-        this.postChanged.next(editorEvents.post.saved);
-        if (cb) {
-          cb();
-        }
+      .then(() => {
+        this.postService
+          .savePostProperty(this.post, 'body')
+          .toPromise()
+          .then(() => {
+            this.toastr.success('Saved.');
+            this.postChanged.next(editorEvents.post.saved);
+            if (cb) {
+              cb();
+            }
+          })
+          .catch(error => {
+            this.postChanged.next(editorEvents.post.publishCancelled);
+            this.toastr.error('There was a problem with saving.');
+          });
+      })
+      .catch(error => {
+        this.postChanged.next(editorEvents.post.publishCancelled);
+        this.toastr.error('There was a problem with saving.');
       });
   }
 
-  publishPost(): ActiveToast<any> {
-    if (this.post.bodyMD.length < 50) {
-      this.postChanged.next(editorEvents.post.publishCancelled);
-      return this.toastr.error('The story needs to be at least 50 characters.');
-    } else if (!this.post.title || this.post.title === '') {
-      this.postChanged.next(editorEvents.post.publishCancelled);
-      return this.toastr.error('The story needs to have a title. Please write a heading in your story.');
-    } else if (this.post.title && this.post.title.length < 10) {
-      this.postChanged.next(editorEvents.post.publishCancelled);
-      return this.toastr.error('The title is too short. Please keep it longer than 9 characters.');
-    }
+  publishPost(): void {
+    this.saveDraft(
+      () => {
+        const modalRef = this.modalService.open(PostPublishModalComponent);
 
-    this.saveDraft(() => {
-      const modalRef = this.modalService.open(PostPublishModalComponent);
+        (modalRef.componentInstance as PostPublishModalComponent).post = this.post;
 
-      (modalRef.componentInstance as PostPublishModalComponent).post = this.post;
+        modalRef.result.then(
+          hashtags => {
+            this.post.hashtags = hashtags;
 
-      modalRef.result.then(
-        hashtags => {
-          this.post.hashtags = hashtags;
+            this.toastr.info('Publishing...');
 
-          this.toastr.info('Publishing...');
-
-          this.postService
-            .publishPost(this.post)
-            .toPromise()
-            .then(() => {
-              this.toastr.success('Published.');
-              this.postChanged.next(editorEvents.post.published);
-            });
-        },
-        dismiss => {
-          this.postChanged.next(editorEvents.post.publishCancelled);
-        }
-      );
-    });
+            this.postService
+              .publishPost(this.post)
+              .toPromise()
+              .then(() => {
+                this.toastr.success('Published.');
+                this.postChanged.next(editorEvents.post.published);
+                this.post.status = 'published';
+              });
+          },
+          dismiss => {
+            this.postChanged.next(editorEvents.post.publishCancelled);
+          }
+        );
+      },
+      () => {
+        this.toastr.info('Publishing was cancelled.');
+      }
+    );
   }
 }

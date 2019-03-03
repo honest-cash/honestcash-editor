@@ -9,6 +9,8 @@
     [separatorKeyCodes]="[32, 188]"
     (onAdd)="onAddRemovePaste()"
     [maxItems]="6"
+    [addOnBlur]="true"
+    (onBlur)="onAddRemovePaste()"
     (onRemove)="onAddRemovePaste()"
     (onPaste)="onAddRemovePaste()"
     [identifyBy]="'hashtag'"

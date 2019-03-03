@@ -1,5 +1,6 @@
 export interface Post {
   id: number;
+  body: string;
   bodyMD: string;
   title: string;
   status: 'draft' | 'published';
