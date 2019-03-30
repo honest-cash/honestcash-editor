@@ -162,18 +162,34 @@ export class EditorService {
         (modalRef.componentInstance as PostPublishModalComponent).post = this.post;
 
         modalRef.result.then(
-          hashtags => {
+          ({ hashtags, hasPaidSection, paidSectionLinebreak, paidSectionCost }) => {
             this.post.hashtags = hashtags;
-
-            this.toastr.info('Publishing...');
+            this.post.hasPaidSection = hasPaidSection;
+            this.post.paidSectionLinebreak = paidSectionLinebreak;
+            this.post.paidSectionCost = paidSectionCost;
 
             this.postService
-              .publishPost(this.post)
+              .savePostProperty(this.post, 'paidSection')
               .toPromise()
               .then(() => {
-                this.toastr.success('Published.');
-                this.postChanged.next(editorEvents.post.published);
-                this.post.status = 'published';
+                this.toastr.info('Publishing...');
+
+                this.postService
+                  .publishPost(this.post)
+                  .toPromise()
+                  .then(() => {
+                    this.toastr.success('Published.');
+                    this.postChanged.next(editorEvents.post.published);
+                    this.post.status = 'published';
+                  })
+                  .catch(error => {
+                    this.postChanged.next(editorEvents.post.publishCancelled);
+                    this.toastr.error('There was a problem with saving.');
+                  });
+              })
+              .catch(error => {
+                this.postChanged.next(editorEvents.post.publishCancelled);
+                this.toastr.error('There was a problem with saving.');
               });
           },
           dismiss => {

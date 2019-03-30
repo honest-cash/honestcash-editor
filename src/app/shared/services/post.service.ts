@@ -12,7 +12,7 @@ const routes = {
   getPost: (id: number) => `/post/${id}`,
   draft: (c: DraftContext = {}) =>
     c.parentPostId ? `/draft?parentPostId=${c.parentPostId}` : c.postId ? `/post/${c.postId}` : '/draft',
-  savePostProperty: (p: Post, property: 'title' | 'body' | 'hashtags') => `/draft/${p.id}/${property}`,
+  savePostProperty: (p: Post, property: 'title' | 'body' | 'hashtags' | 'paidSection') => `/draft/${p.id}/${property}`,
   saveDraft: (p: Post) => `/draft/${p.id}/body`,
   publishPost: (p: Post) => `/draft/${p.id}/publish`
 };
@@ -29,7 +29,7 @@ export class PostService {
     return this.httpClient.get<Post>(routes.draft(draftContext));
   }
 
-  savePostProperty(post: Post, property: 'title' | 'body' | 'hashtags'): Observable<Post> {
+  savePostProperty(post: Post, property: 'title' | 'body' | 'hashtags' | 'paidSection'): Observable<Post> {
     return this.httpClient.put<Post>(routes.savePostProperty(post, property), post);
   }
 
