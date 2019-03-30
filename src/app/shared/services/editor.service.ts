@@ -104,7 +104,7 @@ export class EditorService {
   setPost(post: Post): void {
     if (!this.post) {
       this.post = post;
-      console.log('markdown editor', $(this.post.body).length);
+      console.log('markdown editor', $(this.post.body).length)
       this.originalPost = JSON.parse(JSON.stringify(post));
       this.editor.setContent(post.bodyMD);
       this.postLoaded.complete();
@@ -147,13 +147,13 @@ export class EditorService {
             }
           })
           .catch(error => {
-            console.log('error', error);
+            console.log('error', error)
             this.postChanged.next(editorEvents.post.publishCancelled);
             this.toastr.error('There was a problem with saving.');
           });
       })
       .catch(error => {
-        console.log('2');
+        console.log('2')
         this.postChanged.next(editorEvents.post.publishCancelled);
         this.toastr.error('There was a problem with saving.');
       });
@@ -188,13 +188,13 @@ export class EditorService {
                     this.post.status = 'published';
                   })
                   .catch(error => {
-                    console.log('3');
+                    console.log('3')
                     this.postChanged.next(editorEvents.post.publishCancelled);
                     this.toastr.error('There was a problem with saving.');
                   });
               })
               .catch(error => {
-                console.log('4');
+                console.log('4')
                 this.postChanged.next(editorEvents.post.publishCancelled);
                 this.toastr.error('There was a problem with saving.');
               });

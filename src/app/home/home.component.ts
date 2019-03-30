@@ -39,40 +39,47 @@ export class HomeComponent implements OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.getUser.subscribe((user: User) => {
-      if (!this.user) {
-        this.user = user;
+    this.getUser.subscribe(
+      (user: User) => {
+        if (!this.user) {
+          this.user = user;
 
-        this.activatedRoute.url.subscribe(url => {
-          if (url[1].toString() === 'write') {
-            if (url[2] && url[2].toString() === 'response') {
-              this.mode = 'respond';
-              this.parentPostId = parseInt(url[3].toString());
-            } else if (location.search.indexOf('new=true') !== -1) {
-              this.mode = 'writeFresh';
-            } else {
-              this.mode = 'write';
+          this.activatedRoute.url.subscribe(url => {
+            if (url[1].toString() === 'write') {
+              if (url[2] && url[2].toString() === 'response') {
+                this.mode = 'respond';
+                this.parentPostId = parseInt(url[3].toString());
+              } else if (location.search.indexOf("new=true") !== -1) {
+                this.mode = 'writeFresh';
+              } else {
+                this.mode = 'write';
+              }
+            } else if (url[1].toString() === 'edit') {
+              this.mode = 'edit';
+              this.postId = parseInt(url[2].toString());
             }
-          } else if (url[1].toString() === 'edit') {
-            this.mode = 'edit';
-            this.postId = parseInt(url[2].toString());
-          }
 
-          let draft: any = {};
+            let draft: any = {};
 
-          if (this.mode === 'edit') {
-            draft = {
-              postId: this.postId
-            };
-          }
+            if (this.mode === 'edit') {
+              draft = {
+                postId: this.postId
+              };
+            }
 
-          const postLoader =
-            this.mode === 'writeFresh' ? this.postService.loadNewPostDraft() : this.postService.loadPostDraft(draft);
+            const postLoader = this.mode === 'writeFresh' ?
+              this.postService.loadNewPostDraft() :
+              this.postService.loadPostDraft(draft);
 
-          postLoader.subscribe(this.subscribeSuccess, this.subscribeError);
-        });
-      }
-    }, this.subscribeError);
+            postLoader.subscribe(
+              this.subscribeSuccess,
+              this.subscribeError
+            );
+          });
+        }
+      },
+      this.subscribeError
+    );
   }
 
   ngOnDestroy() {
@@ -144,10 +151,10 @@ export class HomeComponent implements OnDestroy, AfterViewInit {
         );
       }
     }
-  };
+  }
 
   private subscribeError = (error: any) => {
     log.error(error);
     this.router.navigate(['/http-error']);
-  };
+  }
 }

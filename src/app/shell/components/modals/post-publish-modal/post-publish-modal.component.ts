@@ -5,11 +5,11 @@ import { PostService } from '@app/shared/services/post.service';
 import { Post } from '@app/shared/interfaces';
 import { WalletService, ICurrencyConversion, ICurrencyConversionResponse } from '@app/shared/services/wallet.service';
 
-let bodyHTML: string = '';
+let bodyHTML:string = "";
 
 const ridMapFunction = (j: number, el: any) => {
   const $el = $(el);
-  if (!$el.hasClass('cl-preview-section')) {
+  if (!$el.hasClass("cl-preview-section")) {
     const children = $el.children();
     if (children.length === 1) {
       bodyHTML += $el.html();
@@ -19,12 +19,12 @@ const ridMapFunction = (j: number, el: any) => {
   } else {
     bodyHTML += $el.html();
   }
-};
+}
 
 const getRidOfStackeditWrapper = (body: string) => {
   $(body).map(ridMapFunction);
   return bodyHTML;
-};
+}
 
 @Component({
   selector: 'app-post-publish-modal',
@@ -51,6 +51,7 @@ export class PostPublishModalComponent {
 
     // remove wrappers on html tags
     this.bodyHTML = getRidOfStackeditWrapper(this.bodyHTML);
+    
 
     this.paidSectionLinebreakEnd = previewWrapper.childElementCount;
 
@@ -121,7 +122,9 @@ export class PostPublishModalComponent {
 
   public scrollToLinebreak(action: 'increment' | 'decrement', toLinebreak?: number) {
     const $container = $('.post-paid-section-preview-paid-section');
-    const $scrollTo = $(`.post-paid-section-preview-paid-section > *:nth-child(${this.post.paidSectionLinebreak})`);
+    const $scrollTo = $(
+      `.post-paid-section-preview-paid-section > *:nth-child(${this.post.paidSectionLinebreak})`
+    );
 
     if (!toLinebreak) {
       $container.animate({
