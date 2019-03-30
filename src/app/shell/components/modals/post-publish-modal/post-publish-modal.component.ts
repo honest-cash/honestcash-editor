@@ -5,6 +5,27 @@ import { PostService } from '@app/shared/services/post.service';
 import { Post } from '@app/shared/interfaces';
 import { WalletService, ICurrencyConversion, ICurrencyConversionResponse } from '@app/shared/services/wallet.service';
 
+let bodyHTML: string = '';
+
+const ridMapFunction = (j: number, el: any) => {
+  const $el = $(el);
+  if (!$el.hasClass('cl-preview-section')) {
+    const children = $el.children();
+    if (children.length === 1) {
+      bodyHTML += $el.html();
+    } else {
+      children.map(ridMapFunction);
+    }
+  } else {
+    bodyHTML += $el.html();
+  }
+};
+
+const getRidOfStackeditWrapper = (body: string) => {
+  $(body).map(ridMapFunction);
+  return bodyHTML;
+};
+
 @Component({
   selector: 'app-post-publish-modal',
   templateUrl: './post-publish-modal.component.html',
@@ -27,6 +48,10 @@ export class PostPublishModalComponent {
   ) {
     const previewWrapper = document.getElementsByClassName('preview__inner-2')[0];
     this.bodyHTML = previewWrapper.innerHTML;
+
+    // remove wrappers on html tags
+    this.bodyHTML = getRidOfStackeditWrapper(this.bodyHTML);
+
     this.paidSectionLinebreakEnd = previewWrapper.childElementCount;
 
     if (!this.bchUsdRate) {
@@ -96,9 +121,7 @@ export class PostPublishModalComponent {
 
   public scrollToLinebreak(action: 'increment' | 'decrement', toLinebreak?: number) {
     const $container = $('.post-paid-section-preview-paid-section');
-    const $scrollTo = $(
-      `.post-paid-section-preview-paid-section > .cl-preview-section:nth-child(${this.post.paidSectionLinebreak})`
-    );
+    const $scrollTo = $(`.post-paid-section-preview-paid-section > *:nth-child(${this.post.paidSectionLinebreak})`);
 
     if (!toLinebreak) {
       $container.animate({
@@ -118,8 +141,8 @@ export class PostPublishModalComponent {
     } else {
       // timeout is required
       setTimeout(() => {
-        $container.scrollTop(0);
-        const $scrollTo = $(`.post-paid-section-preview-paid-section > .cl-preview-section:nth-child(${toLinebreak})`);
+        const $scrollTo = $(`.post-paid-section-preview-paid-section > *:nth-child(${toLinebreak})`);
+        $container.scrollTop($scrollTo.offset().top - $container.offset().top + $container.scrollTop());
         $scrollTo.addClass('bb-2 bb-dashed bb-red');
       }, 0);
     }

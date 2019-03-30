@@ -1,3 +1,4 @@
+import * as $ from 'jquery';
 import { BehaviorSubject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Post } from '@app/shared/interfaces';
@@ -103,6 +104,7 @@ export class EditorService {
   setPost(post: Post): void {
     if (!this.post) {
       this.post = post;
+      console.log('markdown editor', $(this.post.body).length);
       this.originalPost = JSON.parse(JSON.stringify(post));
       this.editor.setContent(post.bodyMD);
       this.postLoaded.complete();
@@ -137,6 +139,7 @@ export class EditorService {
           .savePostProperty(this.post, 'body')
           .toPromise()
           .then(() => {
+            console.log('0');
             this.toastr.success('Saved.');
             this.postChanged.next(editorEvents.post.saved);
             if (cb) {
@@ -144,11 +147,13 @@ export class EditorService {
             }
           })
           .catch(error => {
+            console.log('error', error);
             this.postChanged.next(editorEvents.post.publishCancelled);
             this.toastr.error('There was a problem with saving.');
           });
       })
       .catch(error => {
+        console.log('2');
         this.postChanged.next(editorEvents.post.publishCancelled);
         this.toastr.error('There was a problem with saving.');
       });
@@ -183,11 +188,13 @@ export class EditorService {
                     this.post.status = 'published';
                   })
                   .catch(error => {
+                    console.log('3');
                     this.postChanged.next(editorEvents.post.publishCancelled);
                     this.toastr.error('There was a problem with saving.');
                   });
               })
               .catch(error => {
+                console.log('4');
                 this.postChanged.next(editorEvents.post.publishCancelled);
                 this.toastr.error('There was a problem with saving.');
               });

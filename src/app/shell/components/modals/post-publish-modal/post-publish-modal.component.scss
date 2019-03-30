@@ -108,7 +108,6 @@
 }
 
 .post-paid-section-preview-wrapper {
-  background-color: #ededed;
   border: 1px solid #c5c5c5;
   border-radius: 3px;
   padding: 0px;
@@ -126,9 +125,9 @@
 }
 
 .post-paid-section-preview-paid-section {
-  background-color: #ededed;
   max-height: 300px;
   overflow: auto;
+  width: 100%;
 }
 
 .post-paid-section-preview-paid-section > *,
@@ -137,8 +136,11 @@
 }
 
 .post-paid-section-preview-paid-section > ul,
-.post-paid-section-preview-paid-section > ul > li {
+.post-paid-section-preview-paid-section > ul > li,
+.post-paid-section-preview-paid-section > ol,
+.post-paid-section-preview-paid-section > ol > li {
   list-style-position: inside;
+  padding-left: 15px;
 }
 
 /* hide scrollbars */
@@ -174,7 +176,6 @@
 .post-paid-section-arrows-mobile > .post-paid-section-down-arrow {
   float: left;
   width: 50%;
-  background-color: #ededed;
   padding: 10px 0px;
 }
 
@@ -286,6 +287,17 @@ input:invalid {
   margin: 0 0 10px !important;
 }
 
+.editor pre,
+.preview pre,
+.post-paid-section-preview-paid-section pre {
+  font-size: 15px;
+  margin: 0 0 10px !important;
+}
+
+.post-paid-section-preview-paid-section pre {
+  font-size: 13px;
+}
+
 .editor ul,
 .editor ul li,
 .editor li,
@@ -293,7 +305,6 @@ input:invalid {
 .post-paid-section-preview-paid-section ul li,
 .post-paid-section-preview-paid-section li {
   font-size: 15px;
-  margin: 0 0 10px !important;
 }
 
 .editor ol,
@@ -303,7 +314,6 @@ input:invalid {
 .post-paid-section-preview-paid-section ol li,
 .post-paid-section-preview-paid-section li {
   font-size: 15px;
-  margin: 0 0 10px !important;
 }
 
 .modal-body,

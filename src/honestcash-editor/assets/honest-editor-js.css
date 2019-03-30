@@ -2035,7 +2035,6 @@ h2:after {
   display: block;
   position: relative;
   top: 0.33em;
-  border-bottom: 1px solid hsla(0, 0%, 50%, 0.33);
 }
 ol ol,
 ol ul,
@@ -4640,7 +4639,6 @@ a.context-menu__item:hover {
 .preview ul li,
 .preview li {
   font-size: 15px;
-  margin: 0 0 10px !important;
 }
 
 .editor ol,
@@ -4650,7 +4648,21 @@ a.context-menu__item:hover {
 .preview ol li,
 .preview li {
   font-size: 15px;
+}
+
+.editor pre,
+.preview pre,
+.post-paid-section-preview-paid-section pre {
+  font-size: 13px;
   margin: 0 0 10px !important;
+}
+
+.post-paid-section-preview-paid-section pre {
+  font-size: 13px;
+}
+
+.post-paid-section-preview-paid-section li > p {
+  display: initial;
 }
 
 .modal-body,
@@ -4671,6 +4683,10 @@ a.context-menu__item:hover {
 .preview ol li,
 .preview li {
   font-size: 15px;
+}
+
+.post-paid-section-preview-paid-section > blockquote {
+  margin-left: 15px;
 }
 
 .bb-2 {
