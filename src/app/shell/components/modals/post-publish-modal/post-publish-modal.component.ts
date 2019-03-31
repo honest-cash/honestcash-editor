@@ -24,21 +24,17 @@ const ridMapFunction = (j: number, el: any) => {
 
 const stringIncludes = (string: string, find: string) => {
   return string.indexOf(find) !== -1;
-};
+}
 
 const syncDomElementsWithOldEditor = (j: number, el: any): any => {
   // remove non dom elements from the result html
   const $el = $(el);
-  if (
-    stringIncludes(el.nodeName, '#text') ||
-    stringIncludes(el.nodeName, '#comment') ||
-    stringIncludes(el.nodeName, 'BR')
-  ) {
+  if (stringIncludes(el.nodeName, "#text") || stringIncludes(el.nodeName, "#comment") || stringIncludes(el.nodeName, "BR")) {
     return;
   }
 
-  _bodyHTML += $el.prop('outerHTML');
-};
+  _bodyHTML += $el.prop("outerHTML");
+}
 
 const getRidOfStackeditWrapper = (body: string) => {
   $(body).map(ridMapFunction);
@@ -73,7 +69,7 @@ export class PostPublishModalComponent {
     this.bodyHTML = getRidOfStackeditWrapper(this.bodyHTML);
     this.paidSectionLinebreakEnd = $(this.bodyHTML).length;
 
-    if (!this.bchUsdRate) {
+    if(!this.bchUsdRate) {
       this.walletService.getCurrencyData().subscribe((response: ICurrencyConversionResponse) => {
         this.bchUsdRate = Number(response.data.rates.USD);
         this.showPaidSectionCostInUSD = true;
