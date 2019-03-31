@@ -6,6 +6,7 @@ import { Post } from '@app/shared/interfaces';
 import { WalletService, ICurrencyConversion, ICurrencyConversionResponse } from '@app/shared/services/wallet.service';
 
 let bodyHTML: string = '';
+let _bodyHTML: string = '';
 
 const ridMapFunction = (j: number, el: any) => {
   const $el = $(el);
@@ -21,9 +22,28 @@ const ridMapFunction = (j: number, el: any) => {
   }
 };
 
+const stringIncludes = (string: string, find: string) => {
+  return string.indexOf(find) !== -1;
+};
+
+const syncDomElementsWithOldEditor = (j: number, el: any): any => {
+  // remove non dom elements from the result html
+  const $el = $(el);
+  if (
+    stringIncludes(el.nodeName, '#text') ||
+    stringIncludes(el.nodeName, '#comment') ||
+    stringIncludes(el.nodeName, 'BR')
+  ) {
+    return;
+  }
+
+  _bodyHTML += $el.prop('outerHTML');
+};
+
 const getRidOfStackeditWrapper = (body: string) => {
   $(body).map(ridMapFunction);
-  return bodyHTML;
+  $(bodyHTML).map(syncDomElementsWithOldEditor);
+  return _bodyHTML;
 };
 
 @Component({
@@ -51,16 +71,17 @@ export class PostPublishModalComponent {
 
     // remove wrappers on html tags
     this.bodyHTML = getRidOfStackeditWrapper(this.bodyHTML);
-
-    this.paidSectionLinebreakEnd = previewWrapper.childElementCount;
+    this.paidSectionLinebreakEnd = $(this.bodyHTML).length;
 
     if (!this.bchUsdRate) {
       this.walletService.getCurrencyData().subscribe((response: ICurrencyConversionResponse) => {
         this.bchUsdRate = Number(response.data.rates.USD);
         this.showPaidSectionCostInUSD = true;
         setTimeout(() => {
-          this.setPaidSectionCost('bch');
-          this.scrollToLinebreak(undefined, this.post.paidSectionLinebreak);
+          if (this.post.hasPaidSection) {
+            this.setPaidSectionCost('bch');
+            this.scrollToLinebreak(undefined, this.post.paidSectionLinebreak);
+          }
         });
       });
     }
@@ -68,7 +89,10 @@ export class PostPublishModalComponent {
 
   public togglePaidSection() {
     if (this.post.hasPaidSection && !this.paidSectionLineBreakTouched) {
-      this.scrollToLinebreak(undefined, 0);
+      setTimeout(() => {
+        this.setPaidSectionCost('bch');
+        this.scrollToLinebreak(undefined, 1);
+      }, 0);
     }
   }
 
@@ -103,7 +127,7 @@ export class PostPublishModalComponent {
   public switchLinebreak(action: 'increment' | 'decrement') {
     switch (action) {
       case 'increment':
-        if (this.post.paidSectionLinebreak < this.paidSectionLinebreakEnd) {
+        if (this.post.paidSectionLinebreak < this.paidSectionLinebreakEnd - 1) {
           this.adjustPaidSectionLinebreak(action);
           this.scrollToLinebreak(action);
         }
@@ -121,9 +145,9 @@ export class PostPublishModalComponent {
 
   public scrollToLinebreak(action: 'increment' | 'decrement', toLinebreak?: number) {
     const $container = $('.post-paid-section-preview-paid-section');
-    const $scrollTo = $(`.post-paid-section-preview-paid-section > *:nth-child(${this.post.paidSectionLinebreak})`);
+    const $scrollTo = $container.children().eq(this.post.paidSectionLinebreak - 1);
 
-    if (!toLinebreak) {
+    if (toLinebreak === null || toLinebreak === undefined) {
       $container.animate({
         scrollTop: $scrollTo.offset().top - $container.offset().top + $container.scrollTop()
       });
@@ -141,7 +165,7 @@ export class PostPublishModalComponent {
     } else {
       // timeout is required
       setTimeout(() => {
-        const $scrollTo = $(`.post-paid-section-preview-paid-section > *:nth-child(${toLinebreak})`);
+        const $scrollTo = $container.children().eq(toLinebreak - 1);
         $container.scrollTop($scrollTo.offset().top - $container.offset().top + $container.scrollTop());
         $scrollTo.addClass('bb-2 bb-dashed bb-red');
       }, 0);

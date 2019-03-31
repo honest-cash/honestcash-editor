@@ -159,6 +159,7 @@ export class EditorService {
       () => {
         const modalRef = this.modalService.open(PostPublishModalComponent);
 
+        this.post.paidSectionLinebreak = this.post.paidSectionLinebreak ? this.post.paidSectionLinebreak : 1;
         (modalRef.componentInstance as PostPublishModalComponent).post = this.post;
 
         modalRef.result.then(
