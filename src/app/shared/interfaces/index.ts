@@ -9,6 +9,9 @@ export interface Post {
   userId: number;
   parentPostId: number;
   parentPost: Post;
+  hasPaidSection: boolean;
+  paidSectionLinebreak: number;
+  paidSectionCost: number;
 }
 
 export interface User {

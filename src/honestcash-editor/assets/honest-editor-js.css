@@ -2035,7 +2035,6 @@ h2:after {
   display: block;
   position: relative;
   top: 0.33em;
-  border-bottom: 1px solid hsla(0, 0%, 50%, 0.33);
 }
 ol ol,
 ol ul,
@@ -2536,9 +2535,6 @@ body {
 }
 :focus {
   outline: none;
-}
-input[type='checkbox'] {
-  outline: 5px auto #349be8;
 }
 .icon {
   width: 100%;

@@ -10,6 +10,7 @@ import { HeaderComponent } from '@app/shell/components/partials/header/header.co
 
 import { PostService } from '@app/shared/services/post.service';
 import { EditorService } from '@app/shared/services/editor.service';
+import { WalletService } from '@app/shared/services/wallet.service';
 import { NotAuthorizedComponent } from '@app/shell/components/pages/not-authorized/not-authorized.component';
 import { NotAuthorizedRoutingModule } from '@app/shell/components/pages/not-authorized/not-authorized-routing.module';
 import { HttpErrorRoutingModule } from '@app/shell/components/pages/http-error/http-error-routing.module';
@@ -52,7 +53,7 @@ import { PartialPostDetailsComponent } from '@app/shell/components/partials/part
     HttpErrorComponent
   ],
   exports: [PostPublishModalComponent, ButtonPostSaveComponent, PartialPostDetailsComponent],
-  providers: [PostService, EditorService],
+  providers: [PostService, EditorService, WalletService],
   entryComponents: [PostPublishModalComponent]
 })
 export class ShellModule {}

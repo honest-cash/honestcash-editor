@@ -2,7 +2,9 @@
   <h6 class="modal-title">Prepare your story for readers</h6>
 </div>
 <div class="modal-body">
-  <small><strong>Add or change topics so readers know what your story is about.</strong></small>
+  <small><strong>Add or change tags so readers know what your story is about.</strong></small
+  ><br />
+  <small><i>Tags are seperated by a space.</i></small>
   <tag-input
     theme="hc-theme"
     [(ngModel)]="post.userPostHashtags"
@@ -16,10 +18,110 @@
     [identifyBy]="'hashtag'"
     [displayBy]="'hashtag'"
   ></tag-input>
+  <hr />
+  <div class="form-check">
+    <input
+      class="form-check-input"
+      type="checkbox"
+      id="paidSectionCheck"
+      [(ngModel)]="post.hasPaidSection"
+      (change)="togglePaidSection()"
+    />
+    <label class="form-check-label" for="paidSectionCheck">
+      <small><strong>I have a paid section in my story</strong></small>
+    </label>
+  </div>
+  <div *ngIf="post.hasPaidSection" class="mb-2">
+    <p>
+      <small class="f-normal mb-1"
+        ><i>Choose how much readers pay in order to read your paid section. <a href="">Learn more.</a></i></small
+      >
+    </p>
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <small for="paidSectionCostInBCH">Cost in BCH:</small>
+        <input
+          type="number"
+          step="0.001"
+          min="0"
+          id="paidSectionCostInBCH"
+          [(ngModel)]="post.paidSectionCost"
+          (change)="setPaidSectionCost('bch')"
+          [ngClass]="{ 'b-red b-2': publishTouched && post.paidSectionCost === 0 }"
+        />
+      </div>
+      <div class="col-sm-12 col-md-6" *ngIf="showPaidSectionCostInUSD">
+        <small for="paidSectionCostInUSD">Cost in USD:</small>
+        <input
+          type="number"
+          step="0.1"
+          min="0"
+          id="paidSectionCostInUSD"
+          [(ngModel)]="paidSectionCostInUSD"
+          (change)="setPaidSectionCost('usd')"
+          [ngClass]="{ 'b-red b-2': publishTouched && paidSectionCostInUSD === 0 }"
+        />
+      </div>
+    </div>
+  </div>
+  <div *ngIf="post.hasPaidSection">
+    <p class="mb-0">
+      <small><strong>Select a paragraph break to split your story into free and paid sections</strong></small>
+    </p>
+    <small class="f-normal" [ngClass]="{ 'c-red': publishTouched && !paidSectionLineBreakTouched }"
+      ><i
+        >Choose where your paid section starts by moving the up and down arrows. The red line indicates where the free
+        section ends and the paid section starts.</i
+      ></small
+    >
+    <div class="row">
+      <div class="col-sm-12 mt-2">
+        <div
+          class="post-paid-section-preview-wrapper"
+          [ngClass]="{ 'b-red b-2': publishTouched && !paidSectionLineBreakTouched }"
+        >
+          <article class="post-paid-section-preview-paid-section" [innerHTML]="bodyHTML"></article>
+        </div>
+        <div class=" d-none d-sm-block text-center post-paid-section-arrows">
+          <div
+            class="post-paid-section-up-arrow"
+            (click)="switchLinebreak('decrement')"
+            [ngClass]="{ 'linebreak-switch-disabled': post.paidSectionLinebreak === 1 }"
+          >
+            <i class="fa fa-chevron-up"></i>
+          </div>
+          <div
+            class="post-paid-section-down-arrow"
+            (click)="switchLinebreak('increment')"
+            [ngClass]="{ 'linebreak-switch-disabled': post.paidSectionLinebreak === paidSectionLinebreakEnd - 1 }"
+          >
+            <i class="fa fa-chevron-down"></i>
+          </div>
+        </div>
+        <div class="d-block d-sm-none text-center post-paid-section-arrows-mobile">
+          <div
+            class="post-paid-section-up-arrow"
+            (click)="switchLinebreak('decrement')"
+            [ngClass]="{ 'linebreak-switch-disabled': post.paidSectionLinebreak === 1 }"
+          >
+            <i class="fa fa-chevron-up"></i>
+          </div>
+          <div
+            class="post-paid-section-down-arrow"
+            (click)="switchLinebreak('increment')"
+            [ngClass]="{ 'linebreak-switch-disabled': post.paidSectionLinebreak === paidSectionLinebreakEnd - 1 }"
+          >
+            <i class="fa fa-chevron-down"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr />
   <small
     ><strong>
       <ul>
-        <li>You can only add maximum of 6 topics to your story</li>
+        <li>You can only add maximum of 6 tags to your story</li>
         <li>You can edit the story after publishing</li>
       </ul>
     </strong></small
